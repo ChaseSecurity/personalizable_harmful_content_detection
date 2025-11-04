@@ -1,9 +1,23 @@
-## 🎯 Personalization with ICL
+# 🎯 Personalized ICL
 
-This module explores **personalized harmful content detection** using in-context learning (ICL).
+This module explores **personalized moderation** with in-context learning, allowing users to adapt harmful content detection according to their preferences — all **without retraining**.
 
-- [`data_augmentation.ipynb`](./data_augmentation.ipynb):  
-  Implements data augmentation for harmful texts to simulate the third personalization scenario — **Blocking Variations of a Newly Annotated Harmful Text**.
+## 🧩 Scenarios Simulated
+1. **Blocking a new harmful category**  
+   – Add minimal examples or definitions to extend detection scope.  
+2. **Unblocking an existing category**  
+   – Redefine acceptable content via user-provided examples.  
+3. **Blocking semantic variations of a harmful instance**  
+   – Detect rephrased or adversarial variants through prompt augmentation.
 
-- [`icl_personalized.ipynb`](./icl_personalized.ipynb):  
-  Contains all ICL-based prediction and evaluation code for personalized moderation experiments.
+## 📁 Structure
+
+```
+.
+├── data_augmentation.ipynb # Generate perturbed examples for personalization experiments
+├── icl_personalized.ipynb # Run personalized ICL on benchmark datasets
+```
+
+## 🚀 Workflow
+1. Run `data_augmentation.ipynb` to create augmented examples.  
+2. Run `icl_personalized.ipynb` to perform personalized ICL evaluation.

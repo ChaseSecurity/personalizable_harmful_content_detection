@@ -1,9 +1,19 @@
-## 🌍 Evaluation on Wild Data
+# 🌍 Evaluation on Wild Data
 
-This module evaluates model robustness and generalization on real-world, noisy data collected from Mastodon.
+This module evaluates ICL robustness on **wild, real-world data** collected from Mastodon — a decentralized social media platform.
 
-- [`generate_reason.ipynb`](./generate_reason.ipynb):  
-  Uses **DeepSeek-V3** to generate textual rationales (“reasons”) based on each sample and its corresponding label.
+## 🧠 Objectives
+- Assess **cross-domain generalization** beyond clean benchmarks.  
+- Explore **binary**, **multi-class**, and **multi-label** harmful content detection.  
+- Study the role of **rationale-augmented prompts** for improving robustness.
 
-- [`icl_wild.ipynb`](./icl_wild.ipynb):  
-  Contains all ICL-based inference and evaluation code
+## 📁 Structure
+```
+.
+├── generate_reason.ipynb # Generate rationales for text-label pairs using DeepSeek-v3
+├── icl_wild.ipynb # Evaluate ICL on Mastodon wild dataset
+```
+
+## 🚀 Workflow
+1. Generate rationales with `generate_reason.ipynb`.(You need an API key from DeepSeek-v3) 
+2. Evaluate ICL performance on wild data via `icl_wild.ipynb`.  

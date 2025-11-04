@@ -1,4 +1,4 @@
-# 🧩 Single-Task Baselines
+# 🔹 Single-Task Baselines
 
 This module fine-tunes the **`bert-base-uncased`** model on three datasets — **Spam**, **TextDetox**, and **SST2** — serving as strong supervised baselines for harmful content detection.  
 It provides training and evaluation scripts for reproducible experiments.

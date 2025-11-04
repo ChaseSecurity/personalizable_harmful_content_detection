@@ -45,16 +45,23 @@ All datasets are publicly available:
 ## 💻 Code Release
 
 ### 🔹 Single-Task Baselines
-Implementation: [baselines/](./baselines/)
+This module fine-tunes the BERT-base-uncased model on three benchmark datasets—TextDetox, UCI SMS, and SST2—to establish strong supervised baselines for harmful content detection. It includes scripts for training, evaluation, and configuration management, enabling reproducible baseline comparisons against in-context learning (ICL) approaches.
+👉 Implementation: [baselines/](./baselines/)
 
 ### 🔹 Single-Task and Multi-Task ICL
-Implementation: [single-and-multi-task_icl/](./single-and-multi-task_icl/icl.ipynb)
+This component investigates the capability of in-context learning (ICL) for harmful content detection across binary, multi-class, and multi-task setups.
+It provides Jupyter notebooks for experimenting with various retrieval strategies, prompt templates, and foundation models (Llama, Mistral, Qwen).
+👉 Implementation: [single-and-multi-task_icl/](./single-and-multi-task_icl/icl.ipynb)
 
 ### 🔹 Personalized ICL
-Implementation: [personalization/](./personalization/)
+This module demonstrates user-specific moderation customization via ICL.
+It simulates three real-world personalization scenarios—blocking new harmful categories, unblocking acceptable ones, and blocking semantic variations—all achieved through prompt-level updates without retraining.
+👉 Implementation: [personalization/](./personalization/)
 
 ### 🔹 Evaluation on Wild Data
-Implementation: [evalOnWild/](./evalOnWild/)
+This section evaluates model robustness on Mastodon wild data, a noisy, real-world dataset covering multiple harmful content types.
+It explores ICL performance under binary, multi-class, and multi-label formulations, and introduces rationale-augmented prompts to enhance generalization and reduce false positives.
+👉Implementation: [evalOnWild/](./evalOnWild/)
 
 ---
 
