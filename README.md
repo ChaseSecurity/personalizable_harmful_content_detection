@@ -4,7 +4,7 @@ This repository contains the official implementation of our paper:
 **_“Beyond One-Size-Fits-All: Personalized Harmful Content Detection with In-Context Learning”_**
 
 - [📄 Paper (arXiv)](https://arxiv.org/)
-- [🌐 Project Page](https://arxiv.org/)
+- [🌐 Project Page](https://chasesecurity.github.io/personalizable_harmful_content_detection/)
 
 ---
 
