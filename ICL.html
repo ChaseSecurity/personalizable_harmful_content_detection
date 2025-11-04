@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In-Context Learning Tasks Animation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        #canvas-container {
+            width: 100%;
+            max-width: 1720px; /* 适配新画布宽度 */
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            overflow: hidden; 
+            position: relative; 
+        }
+        canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+        #replay-button {
+            background-color: #3b8bC3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+        #replay-button:hover {
+            background-color: #084a91;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <canvas id="canvas" width="1720" height="1240"></canvas> <!-- 修改画布尺寸为40的整数倍 -->
+    </div>
+    <button id="replay-button">Replay</button>
+
+    <script>
+    (() => {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const replayButton = document.getElementById('replay-button');
+        const canvasContainer = document.getElementById('canvas-container');
+
+        // 核心配置 - 改为40的整数倍，适配网格（1720=40×43，1240=40×31）
+        const baseWidth = 1720;  // 原1700，改为40的整数倍
+        const baseHeight = 1240; // 原1230，改为40的整数倍
+        const dpr = window.devicePixelRatio || 1;
+        
+        
+        canvas.width = baseWidth * dpr;
+        canvas.height = baseHeight * dpr;
+        ctx.scale(dpr, dpr);
+        
+        // 颜色配置（保持统一深蓝色系）
+        const colors = {
+            primary: '#3b8bC3',    // 主蓝色
+            secondary: '#084a91',  // 深蓝色
+            accent1: '#084a91',    // （Toxicity）
+            accent2: '#084a91',    // （Spam）
+            accent3: '#084a91',    // （Sentiment）
+            text: '#2d2d44',       // 文字色
+            lightText: '#6b7280',  // 浅色文字
+            border: '#e5e7eb',     // 边框色
+            bgBox: '#f8fafc',      // 方框背景
+            grid: 'rgba(128, 128, 128, 0.1)', // 网格线
+            arrow: '#3b8bC3'       // 箭头颜色
+        };
+
+        // 动画阶段
+        const PHASES = {
+            INIT: 0,                  // 初始化
+            SHOW_LEFT_TITLE: 1,       // 显示左侧标题
+            SHOW_LEFT_BOX: 2,         // 显示左侧方框
+            SHOW_BOX_CONTENT: 3,      // 显示方框内容
+            SHOW_RIGHT_TITLE: 4,      // 显示右侧标题
+            SHOW_DATASETS: 5,         // 显示三个数据集
+            SHOW_DATASET_ARROWS: 6,   // 显示数据集箭头
+            SHOW_TRAIN_TEST: 7,       // 显示训练测试集
+            SHOW_TESTING_ARROW: 8,    // 显示testing箭头
+            SHOW_XQUERY: 9,           // 显示xquery
+            SHOW_CROSS_ARROW: 10,     // 显示交叉箭头
+            SHOW_RETRIEVAL_ARROW: 11, // 显示检索策略箭头
+            SHOW_RETRIEVAL_SET: 12,   // 显示检索集合
+            SHOW_FIFTH_ARROWS: 13,    // 显示第五部分三个向下箭头
+            SHOW_PROMPT_BOX: 14,      // 显示prompt方框
+            SHOW_PROMPT_CONTENT: 15,  // 显示prompt内容
+            SHOW_PROMPT_TO_M_ARROW: 16,// 显示prompt到M的箭头
+            SHOW_M_BOX: 17,           // 显示M方框和foundation model
+            SHOW_M_TO_Y_ARROW: 18,    // 显示M到y的箭头
+            SHOW_Y: 19,               // 显示y
+            DONE: 20,                 // 完成
+            LOOP: 21                  // 循环等待
+        };
+
+        // 任务描述内容
+        const taskContent = [
+            "#### Positioning",
+            "- Assistant Name: Toxic text Detector",
+            "- Primary Task: Classify whether a given",
+            "  text is toxic or benign.",
+            "#### Capabilities",
+            "- Message Analysis: Accurately analyze",
+            "  the content and characteristics of text.",
+            "- Toxicity Classification: Determine",
+            "  whether a text is 'toxic' or 'benign'.",
+            "#### Knowledge Base",
+            "- Message Categories:",
+            "  - toxic",
+            "  - benign",
+            "#### Instructions for Use",
+            "- Input: A piece of text.",
+            "- Output: Only output the category of",
+            "  the text ('toxic' or 'benign'), without",
+            "  any additional explanation."
+        ];
+
+        // Prompt内容
+        const promptContent = [
+            "<Task Description>",
+            "==",
+            "Query: <sentence 1>",
+            "Answer: <label>",
+            "==",
+            "Query: <sentence 2>",
+            "Answer: <label>",
+            "==",
+            "...",
+            "==",
+            "Query: <query text>",
+            "Answer:"
+        ];
+
+        // 数据集配置
+        const datasets = [
+            { name: "Toxicity", color: colors.accent1 },
+            { name: "Spam", color: colors.accent2 },
+            { name: "Sentiment", color: colors.accent3 }
+        ];
+
+        // 状态变量
+        let phase = PHASES.INIT;
+        let t = 0;                  // 时间计数器
+        let lastTs = 0;             // 上一帧时间
+        let currentLine = 0;        // 当前显示的文本行
+        let datasetIndex = 0;       // 当前显示的数据集索引
+        let arrowIndex = 0;         // 当前显示的数据集箭头索引
+        let fifthArrowIndex = 0;    // 当前显示的第五部分箭头索引
+        let promptLine = 0;         // 当前显示的prompt文本行
+        const SPEED = 0.8;          // 动画速度
+        const LOOP_DELAY = 15000;   // 循环延迟时间
+        const ARROW_LABEL_SIZE = 16; // 统一箭头标签字体大小
+
+        // 布局参数 - 微调右侧元素位置，适配新画布宽度
+        const layout = {
+            leftSectionCenterX: 350,  // 左侧部分中心X
+            leftTitleY: 100,          // 左侧标题Y
+            rightTitleX: 750,         // 右侧标题X
+            rightTitleY: 100,         // 右侧标题Y
+            boxWidth: 500,            // 方框宽度
+            boxHeight: 400,           // 方框高度
+            boxY: 200,                // 方框Y坐标
+            datasetStartX: 750,       // 数据集起始X
+            datasetStartY: 180,       // 数据集起始Y
+            datasetSpacing: 200,      // 数据集水平间距
+            trainTestY: 350,          // 训练测试集Y坐标
+            trainX: 850,              // 训练集X坐标
+            testX: 1150,              // 测试集X坐标
+            
+            // 第三部分布局
+            retrievalArrowStartY: 350 + 45,
+            retrievalArrowEndY: 490,
+            retrievalSetY: 490,
+            retrievalSetWidth: 350,
+            retrievalSetHeight: 60,
+            retrievalSetCenterX: 1000, 
+            
+            // 第四部分布局
+            testingArrowStartY: 350 + 45,
+            testingArrowEndY: 490,
+            xqueryY: 490,
+            xqueryWidth: 200,
+            xqueryHeight: 60,
+            xqueryCenterX: 1300,     
+            crossArrowY: 470,
+            
+            // 第五部分布局
+            fifthSectionCenterX: 1150, 
+            promptBoxY: 650,
+            promptBoxWidth: 600,
+            promptBoxHeight: 350,
+            promptToMArrowY: 1030,
+            MBoxY: 1050,
+            MBoxWidth: 80,
+            MBoxHeight: 60,
+            foundationModelX: 1200,   // 从1180改为1200，向右移20px
+            MToYArrowY: 1130,
+            yY: 1180,
+            ySize: 36
+        };
+        // 计算左侧元素X坐标
+        layout.boxX = layout.leftSectionCenterX - layout.boxWidth / 2;
+        
+        // 计算训练/测试集中心X
+        layout.trainCenterX = layout.trainX + 80;
+        layout.testCenterX = layout.testX + 80;
+        
+        // 计算第三部分X坐标
+        layout.retrievalArrowX = layout.trainCenterX;
+        layout.retrievalSetX = layout.retrievalSetCenterX - layout.retrievalSetWidth / 2;
+        
+        // 计算第四部分X坐标
+        layout.testingArrowX = layout.testCenterX;
+        layout.xqueryX = layout.xqueryCenterX - layout.xqueryWidth / 2;
+        layout.crossArrowStartX = layout.xqueryCenterX - 70;
+        layout.crossArrowEndX = layout.retrievalSetCenterX - 70;
+        
+        // 计算第五部分X坐标
+        layout.promptBoxX = layout.fifthSectionCenterX - layout.promptBoxWidth / 2;
+        layout.MBoxX = layout.fifthSectionCenterX - layout.MBoxWidth / 2;
+        layout.yX = layout.fifthSectionCenterX;
+
+        // 设置字体
+        function setFont(size = 11, bold = false, mono = false) {
+            const fontFamily = mono ? 'ui-monospace, SFMono-Regular, Menlo, Consolas' : 'Inter, system-ui, sans-serif';
+            ctx.font = `${bold ? 'bold ' : ''}${size}px ${fontFamily}`;
+        }
+
+        // 绘制文本 - 边界校验
+        function drawText(text, x, y, maxWidth, lineHeight = 18, color = colors.text, alpha = 1, bold = false, mono = false) {
+            // 确保文本不超出右边界
+            if (x + maxWidth > baseWidth) {
+                maxWidth = baseWidth - x - 10;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            setFont(11, bold, mono);
+            ctx.fillStyle = color;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+
+            const lines = text.split('\n');
+            lines.forEach((line, i) => {
+                let currentX = x;
+                let currentLine = line;
+                
+                while (ctx.measureText(currentLine).width > maxWidth) {
+                    let splitIndex = currentLine.lastIndexOf(' ', maxWidth / 11);
+                    if (splitIndex === -1) splitIndex = maxWidth / 11;
+                    ctx.fillText(currentLine.substring(0, splitIndex), currentX, y + i * lineHeight);
+                    currentLine = currentLine.substring(splitIndex + 1);
+                    i++;
+                }
+                ctx.fillText(currentLine, currentX, y + i * lineHeight);
+            });
+
+            ctx.restore();
+            return y + lines.length * lineHeight;
+        }
+
+        // 绘制带上下标的文本
+        function drawSubSuperText(base, sub, sup, x, y, baseSize = 14, subSupSize = 10, color = colors.text, alpha = 1) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            
+            setFont(baseSize, true);
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(base, x, y);
+            const baseWidth = ctx.measureText(base).width;
+            
+            setFont(subSupSize);
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(sup, x + baseWidth - 3, y - baseSize/4);
+            
+            setFont(subSupSize);
+            ctx.textBaseline = 'top';
+            ctx.fillText(sub, x + baseWidth - 3, y + baseSize/4);
+            
+            ctx.restore();
+            return x + baseWidth;
+        }
+
+        // 绘制带下标文本
+        function drawSubText(base, sub, x, y, baseSize = 18, subSize = 12, color = colors.text, alpha = 1) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            
+            setFont(baseSize, true);
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(base, x, y);
+            const baseWidth = ctx.measureText(base).width;
+            
+            setFont(subSize);
+            ctx.textBaseline = 'top';
+            ctx.fillText(sub, x + baseWidth, y + baseSize/4);
+            
+            ctx.restore();
+            return x + baseWidth + ctx.measureText(sub).width;
+        }
+
+        // 绘制包含xquery的文本
+        function drawTextWithXQuery(text, x, y, color = colors.text, alpha = 1) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            setFont(ARROW_LABEL_SIZE, true);
+            ctx.fillStyle = color;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            
+            const parts = text.split('xquery');
+            if (parts.length === 1) {
+                ctx.fillText(text, x, y);
+                ctx.restore();
+                return;
+            }
+            
+            ctx.fillText(parts[0], x, y);
+            const firstPartWidth = ctx.measureText(parts[0]).width;
+            const currentX = x + firstPartWidth;
+            
+            const totalWidth = drawSubText('x', 'query', currentX, y, ARROW_LABEL_SIZE, 12, color, alpha);
+            
+            if (parts[1]) {
+                ctx.fillText(parts[1], totalWidth, y);
+            }
+            
+            ctx.restore();
+        }
+
+        // 绘制曲线箭头 - 增加边界限制
+        function drawCurvedArrow(startX, startY, endX, endY, controlX, controlY, color, alpha = 1, thickness = 2) {
+            // 确保箭头不超出右边界
+            startX = Math.min(startX, baseWidth - 10);
+            endX = Math.min(endX, baseWidth - 10);
+            controlX = Math.min(controlX, baseWidth - 10);
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = thickness;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.quadraticCurveTo(controlX, controlY, endX, endY);
+            ctx.stroke();
+
+            const angle = Math.atan2(endY - controlY, endX - controlX);
+            const arrowLength = 10;
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowLength * Math.cos(angle - Math.PI / 6),
+                endY - arrowLength * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowLength * Math.cos(angle + Math.PI / 6),
+                endY - arrowLength * Math.sin(angle + Math.PI / 6)
+            );
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // 绘制直线箭头 - 增加边界限制
+        function drawStraightArrow(startX, startY, endX, endY, label, color, alpha = 1, thickness = 2) {
+            // 确保箭头不超出右边界
+            startX = Math.min(startX, baseWidth - 10);
+            endX = Math.min(endX, baseWidth - 10);
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = thickness;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            const angle = Math.atan2(endY - startY, endX - startX);
+            const arrowLength = 10;
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowLength * Math.cos(angle - Math.PI / 6),
+                endY - arrowLength * Math.sin(angle - Math.PI / 6)
+            );
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowLength * Math.cos(angle + Math.PI / 6),
+                endY - arrowLength * Math.sin(angle + Math.PI / 6)
+            );
+            ctx.stroke();
+
+            setFont(ARROW_LABEL_SIZE, true);
+            ctx.fillStyle = color;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            
+            let labelX, labelY;
+            if (startX === endX) {
+                const textWidth = ctx.measureText(label).width;
+                labelX = startX + 15;
+                labelY = startY + (endY - startY) / 2 - 10;
+            } else if (startY === endY) {
+                labelX = startX + (endX - startX) / 2;
+                labelY = startY - 20;
+            } else {
+                labelX = startX + (endX - startX) / 2;
+                labelY = startY + (endY - startY) / 2 - 20;
+            }
+            
+            // 确保标签不超出边界
+            if (labelX + ctx.measureText(label).width > baseWidth) {
+                labelX = baseWidth - ctx.measureText(label).width - 10;
+            }
+            
+            if (label.includes('xquery')) {
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                setFont(ARROW_LABEL_SIZE, true);
+                tempCtx.font = ctx.font;
+                const estimatedWidth = tempCtx.measureText(label.replace('xquery', 'xquery')).width;
+                drawTextWithXQuery(label, labelX - estimatedWidth/2, labelY, color, alpha);
+            } else {
+                if (startX === endX) {
+                    ctx.textAlign = 'left';
+                } else {
+                    ctx.textAlign = 'center';
+                }
+                ctx.fillText(label, labelX, labelY);
+            }
+
+            ctx.restore();
+        }
+
+        // 绘制带边框的方框
+        function drawBox(x, y, width, height, alpha = 1) {
+            // 确保方框不超出右边界
+            if (x + width > baseWidth) {
+                width = baseWidth - x - 10;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            ctx.fillStyle = colors.bgBox;
+            ctx.fillRect(x, y, width, height);
+            
+            ctx.strokeStyle = colors.primary;
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, width, height);
+            
+            ctx.shadowColor = 'rgba(0,0,0,0.05)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 3;
+            
+            ctx.restore();
+        }
+
+        // 绘制数据集卡片
+        function drawDatasetCard(x, y, name, color, alpha = 1) {
+            // 确保卡片不超出右边界
+            if (x + 180 > baseWidth) {
+                x = baseWidth - 190;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            if (name === "Toxicity" || name === "Spam") {
+                ctx.fillStyle = color + '30';
+            } else {
+                ctx.fillStyle = color + '20';
+            }
+            
+            ctx.roundRect(x, y, 180, 50, 8);
+            ctx.fill();
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.roundRect(x, y, 180, 50, 8);
+            ctx.stroke();
+            
+            setFont(18, true);
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(name, x + 90, y + 25);
+            
+            ctx.restore();
+        }
+
+        // 绘制训练/测试集标签
+        function drawTrainTestLabel(x, y, type, number, color, alpha = 1) {
+            // 确保标签不超出右边界
+            if (x + 160 > baseWidth) {
+                x = baseWidth - 170;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            ctx.fillStyle = color + '10';
+            ctx.roundRect(x, y, 160, 45, 6);
+            ctx.fill();
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1.5;
+            ctx.roundRect(x, y, 160, 45, 6);
+            ctx.stroke();
+            
+            setFont(14);
+            ctx.fillStyle = colors.text;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`${type} (${number})`, x + 80, y + 22);
+            
+            ctx.restore();
+        }
+
+        // 绘制检索集合
+        function drawRetrievalSet(x, y, width, height, alpha = 1) {
+            // 确保检索集合不超出右边界
+            if (x + width > baseWidth) {
+                width = baseWidth - x - 10;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            ctx.fillStyle = colors.primary + '10';
+            ctx.roundRect(x, y, width, height, 6);
+            ctx.fill();
+            
+            ctx.strokeStyle = colors.primary;
+            ctx.lineWidth = 1.5;
+            ctx.roundRect(x, y, width, height, 6);
+            ctx.stroke();
+            
+            const centerY = y + height/2;
+            setFont(16, true);
+            const dWidth = ctx.measureText('𝒟').width;
+            setFont(12);
+            const totalTextWidth = dWidth + ctx.measureText('= {(x₁, y₁), ..., (xₖ, yₖ)}').width + 20;
+            const startX = x + width/2 - totalTextWidth/2;
+            
+            let currentX = startX;
+            currentX = drawSubSuperText('𝒟', 'k', 'r', currentX, centerY, 16, 12);
+            
+            setFont(14);
+            ctx.fillStyle = colors.text;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('= {(x₁, y₁), ..., (xₖ, yₖ)}', currentX + 10, centerY);
+            
+            ctx.restore();
+        }
+
+        // 绘制xquery
+        function drawXQuery(x, y, width, height, alpha = 1) {
+            // 确保xquery不超出右边界
+            if (x + width > baseWidth) {
+                x = baseWidth - width - 10;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            ctx.fillStyle = colors.secondary + '10';
+            ctx.roundRect(x, y, width, height, 6);
+            ctx.fill();
+            
+            ctx.strokeStyle = colors.secondary;
+            ctx.lineWidth = 1.5;
+            ctx.roundRect(x, y, width, height, 6);
+            ctx.stroke();
+            
+            const centerX = x + width/2 - 30;
+            const centerY = y + height/2;
+            drawSubText('x', 'query', centerX, centerY, 18, 12);
+            
+            ctx.restore();
+        }
+
+        // 绘制Prompt方框
+        function drawPromptBox(x, y, width, height, alpha = 1) {
+            // 确保Prompt方框不超出右边界
+            if (x + width > baseWidth) {
+                width = baseWidth - x - 10;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            ctx.fillStyle = colors.bgBox;
+            ctx.fillRect(x, y, width, height);
+            
+            ctx.strokeStyle = colors.accent2;
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, width, height);
+            
+            ctx.shadowColor = 'rgba(0,0,0,0.05)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 3;
+            
+            setFont(18, true);
+            ctx.fillStyle = colors.accent2;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillText('Prompt', x + width/2, y + 10);
+            
+            ctx.restore();
+        }
+
+        // 绘制M方框和foundation model文字
+        function drawMBox(x, y, width, height, alpha = 1) {
+            // 确保M方框不超出右边界
+            if (x + width > baseWidth) {
+                x = baseWidth - width - 10;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            ctx.fillStyle = colors.primary + '10';
+            ctx.roundRect(x, y, width, height, 8);
+            ctx.fill();
+            
+            ctx.strokeStyle = colors.primary;
+            ctx.lineWidth = 2;
+            ctx.roundRect(x, y, width, height, 8);
+            ctx.stroke();
+            
+            setFont(32, true);
+            ctx.fillStyle = colors.primary;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('M', x + width/2, y + height/2);
+            
+            setFont(16, true);
+            ctx.fillStyle = colors.text;
+            ctx.textAlign = 'left';
+            // 确保文字不超出边界
+            const textX = Math.min(layout.foundationModelX, baseWidth - 150);
+            ctx.fillText('Foundation Model', textX, y + height/2);
+            
+            ctx.restore();
+        }
+
+        // 绘制y元素
+        function drawY(x, y, size, alpha = 1) {
+            // 确保y元素不超出右边界
+            if (x > baseWidth - 20) {
+                x = baseWidth - 20;
+            }
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            setFont(size, true);
+            ctx.fillStyle = colors.secondary;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('y', x, y);
+            
+            ctx.restore();
+        }
+
+        // 绘制网格背景 - 修复右侧竖线（改为x <= baseWidth，确保与画布边缘对齐）
+        function drawGrid() {
+            ctx.save();
+            ctx.strokeStyle = colors.grid;
+            ctx.lineWidth = 1;
+            
+            // 水平网格线
+            for (let y = 0; y < baseHeight; y += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(baseWidth, y);
+                ctx.stroke();
+            }
+            
+            // 垂直网格线 - 修复：x <= baseWidth，确保最右竖线与画布边缘对齐
+            for (let x = 0; x <= baseWidth; x += 40) { 
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, baseHeight);
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+
+        // 缓动函数
+        function easeOutCubic(x) {
+            return 1 - Math.pow(1 - x, 3);
+        }
+
+        // 重置动画
+        function resetAnimation() {
+            phase = PHASES.INIT;
+            t = 0;
+            lastTs = 0;
+            currentLine = 0;
+            datasetIndex = 0;
+            arrowIndex = 0;
+            fifthArrowIndex = 0;
+            promptLine = 0;
+        }
+
+        // 重新播放动画
+        function replayAnimation() {
+            resetAnimation();
+            lastTs = 0;
+            requestAnimationFrame(frame);
+        }
+
+        // 为重新播放按钮添加事件监听器
+        replayButton.addEventListener('click', replayAnimation);
+
+        // 窗口大小变化处理
+        window.addEventListener('resize', () => {
+            // 重新设置裁剪路径
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.scale(dpr, dpr);
+            ctx.beginPath();
+            ctx.rect(0, 0, baseWidth, baseHeight);
+            ctx.clip();
+            ctx.restore();
+            
+            drawGrid();
+        });
+
+        // 动画帧绘制 - 核心修复：帧内持续裁剪
+        function frame(ts) {
+            const s = SPEED;
+            if (!lastTs) lastTs = ts;
+            const dt = Math.min(64, ts - lastTs) * (s / 16.6667);
+            lastTs = ts;
+            t += dt;
+
+            // 关键修复1：每次绘制前彻底清除画布
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.restore();
+            
+            // 关键修复2：每次绘制前重新设置裁剪路径（确保持续生效）
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, 0, baseWidth, baseHeight);
+            ctx.clip();
+            
+            // 绘制网格
+            drawGrid();
+
+            switch (phase) {
+                case PHASES.INIT:
+                    if (t > 15) {
+                        phase = PHASES.SHOW_LEFT_TITLE;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_LEFT_TITLE:
+                    setFont(24, true);
+                    ctx.fillStyle = colors.primary;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('Task Description', layout.leftSectionCenterX, layout.leftTitleY);
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_LEFT_BOX;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_LEFT_BOX:
+                    setFont(24, true);
+                    ctx.fillStyle = colors.primary;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('Task Description', layout.leftSectionCenterX, layout.leftTitleY);
+                    
+                    const boxProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawBox(
+                        layout.boxX, layout.boxY,
+                        layout.boxWidth, layout.boxHeight,
+                        boxProgress
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_BOX_CONTENT;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_BOX_CONTENT:
+                    setFont(24, true);
+                    ctx.fillStyle = colors.primary;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('Task Description', layout.leftSectionCenterX, layout.leftTitleY);
+                    
+                    drawBox(
+                        layout.boxX, layout.boxY,
+                        layout.boxWidth, layout.boxHeight,
+                        1
+                    );
+                    
+                    const lineDelay = 10;
+                    if (t > currentLine * lineDelay && currentLine < taskContent.length) {
+                        currentLine++;
+                    }
+                    
+                    let yPos = layout.boxY + 15;
+                    for (let i = 0; i < currentLine; i++) {
+                        const line = taskContent[i];
+                        const isHeading = line.startsWith('####');
+                        
+                        yPos = drawText(
+                            line,
+                            layout.boxX + 15,
+                            yPos,
+                            layout.boxWidth - 30,
+                            18,
+                            isHeading ? colors.secondary : colors.text,
+                            1,
+                            isHeading,
+                            true
+                        ) + 3;
+                    }
+                    
+                    if (currentLine >= taskContent.length && t > currentLine * lineDelay + 15) {
+                        phase = PHASES.SHOW_RIGHT_TITLE;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_RIGHT_TITLE:
+                    drawLeftComplete();
+                    
+                    setFont(24, true);
+                    ctx.fillStyle = colors.secondary;
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('Datasets', layout.rightTitleX, layout.rightTitleY);
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_DATASETS;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_DATASETS:
+                    drawLeftComplete();
+                    
+                    setFont(24, true);
+                    ctx.fillStyle = colors.secondary;
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('Datasets', layout.rightTitleX, layout.rightTitleY);
+                    
+                    const datasetDelay = 20;
+                    if (t > datasetIndex * datasetDelay && datasetIndex < datasets.length) {
+                        datasetIndex++;
+                    }
+                    
+                    for (let i = 0; i < datasetIndex; i++) {
+                        const dataset = datasets[i];
+                        const xPos = layout.datasetStartX + i * layout.datasetSpacing;
+                        drawDatasetCard(
+                            xPos, layout.datasetStartY,
+                            dataset.name, dataset.color,
+                            1
+                        );
+                    }
+                    
+                    if (datasetIndex >= datasets.length && t > datasetIndex * datasetDelay + 15) {
+                        phase = PHASES.SHOW_DATASET_ARROWS;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_DATASET_ARROWS:
+                    drawLeftComplete();
+                    
+                    setFont(24, true);
+                    ctx.fillStyle = colors.secondary;
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('Datasets', layout.rightTitleX, layout.rightTitleY);
+                    
+                    datasets.forEach((dataset, i) => {
+                        const xPos = layout.datasetStartX + i * layout.datasetSpacing;
+                        drawDatasetCard(
+                            xPos, layout.datasetStartY,
+                            dataset.name, dataset.color,
+                            1
+                        );
+                    });
+                    
+                    const arrowDelay = 12;
+                    if (t > arrowIndex * arrowDelay && arrowIndex < datasets.length * 2) {
+                        arrowIndex++;
+                    }
+                    
+                    datasets.forEach((dataset, i) => {
+                        const cardX = layout.datasetStartX + i * layout.datasetSpacing;
+                        const cardCenterX = cardX + 90;
+                        const cardBottomY = layout.datasetStartY + 50;
+                        
+                        const trainTargetX = layout.trainCenterX;
+                        const trainControlX = cardCenterX + (trainTargetX - cardCenterX) / 2;
+                        const trainControlY = layout.datasetStartY + 70;
+                        
+                        const testTargetX = layout.testCenterX;
+                        const testControlX = cardCenterX + (testTargetX - cardCenterX) / 2;
+                        const testControlY = layout.datasetStartY + 90;
+                        
+                        const trainArrowIndex = i * 2;
+                        if (trainArrowIndex < arrowIndex) {
+                            const progress = trainArrowIndex === arrowIndex - 1 
+                                ? easeOutCubic(Math.min(1, (t - trainArrowIndex * arrowDelay) / 12))
+                                : 1;
+                            drawCurvedArrow(
+                                cardCenterX, cardBottomY,
+                                trainTargetX, layout.trainTestY,
+                                trainControlX, trainControlY,
+                                dataset.color,
+                                progress
+                            );
+                        }
+                        
+                        const testArrowIndex = i * 2 + 1;
+                        if (testArrowIndex < arrowIndex) {
+                            const progress = testArrowIndex === arrowIndex - 1 
+                                ? easeOutCubic(Math.min(1, (t - testArrowIndex * arrowDelay) / 12))
+                                : 1;
+                            drawCurvedArrow(
+                                cardCenterX, cardBottomY,
+                                testTargetX, layout.trainTestY,
+                                testControlX, testControlY,
+                                dataset.color,
+                                progress
+                            );
+                        }
+                    });
+                    
+                    if (arrowIndex >= datasets.length * 2 && t > arrowIndex * arrowDelay + 15) {
+                        phase = PHASES.SHOW_TRAIN_TEST;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_TRAIN_TEST:
+                    drawLeftComplete();
+                    
+                    setFont(24, true);
+                    ctx.fillStyle = colors.secondary;
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('Datasets', layout.rightTitleX, layout.rightTitleY);
+                    
+                    datasets.forEach((dataset, i) => {
+                        const xPos = layout.datasetStartX + i * layout.datasetSpacing;
+                        drawDatasetCard(
+                            xPos, layout.datasetStartY,
+                            dataset.name, dataset.color,
+                            1
+                        );
+                    });
+                    
+                    datasets.forEach((dataset, i) => {
+                        const cardX = layout.datasetStartX + i * layout.datasetSpacing;
+                        const cardCenterX = cardX + 90;
+                        const cardBottomY = layout.datasetStartY + 50;
+                        
+                        const trainTargetX = layout.trainCenterX;
+                        const trainControlX = cardCenterX + (trainTargetX - cardCenterX) / 2;
+                        const trainControlY = layout.datasetStartY + 70;
+                        
+                        const testTargetX = layout.testCenterX;
+                        const testControlX = cardCenterX + (testTargetX - cardCenterX) / 2;
+                        const testControlY = layout.datasetStartY + 90;
+                        
+                        drawCurvedArrow(
+                            cardCenterX, cardBottomY,
+                            trainTargetX, layout.trainTestY,
+                            trainControlX, trainControlY,
+                            dataset.color
+                        );
+                        
+                        drawCurvedArrow(
+                            cardCenterX, cardBottomY,
+                            testTargetX, layout.trainTestY,
+                            testControlX, testControlY,
+                            dataset.color
+                        );
+                    });
+                    
+                    const trainTestProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawTrainTestLabel(
+                        layout.trainX, layout.trainTestY,
+                        'training(D)', 800,
+                        colors.primary, trainTestProgress
+                    );
+                    drawTrainTestLabel(
+                        layout.testX, layout.trainTestY,
+                        'testing(x)', 200,
+                        colors.secondary, trainTestProgress
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_TESTING_ARROW;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_TESTING_ARROW:
+                    drawLeftComplete();
+                    drawRightComplete();
+                    
+                    const testingArrowProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawStraightArrow(
+                        layout.testingArrowX, layout.testingArrowStartY,
+                        layout.testingArrowX, layout.testingArrowEndY,
+                        'for each element xquery in x',
+                        colors.secondary,
+                        testingArrowProgress,
+                        2
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_XQUERY;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_XQUERY:
+                    drawLeftComplete();
+                    drawRightComplete();
+                    
+                    drawStraightArrow(
+                        layout.testingArrowX, layout.testingArrowStartY,
+                        layout.testingArrowX, layout.testingArrowEndY,
+                        'for each element xquery in x',
+                        colors.secondary,
+                        1,
+                        2
+                    );
+                    
+                    const xqueryProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawXQuery(
+                        layout.xqueryX, layout.xqueryY,
+                        layout.xqueryWidth, layout.xqueryHeight,
+                        xqueryProgress
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_CROSS_ARROW;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_CROSS_ARROW:
+                    drawLeftComplete();
+                    drawRightComplete();
+                    drawTestingSectionComplete();
+                    
+                    const crossArrowProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawStraightArrow(
+                        layout.crossArrowStartX, layout.crossArrowY,
+                        layout.crossArrowEndX, layout.crossArrowY,
+                        'xquery',
+                        colors.secondary,
+                        crossArrowProgress,
+                        2
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_RETRIEVAL_ARROW;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_RETRIEVAL_ARROW:
+                    drawLeftComplete();
+                    drawRightComplete();
+                    drawTestingSectionComplete();
+                    drawCrossArrowComplete();
+                    
+                    const retrievalArrowProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawStraightArrow(
+                        layout.retrievalArrowX, layout.retrievalArrowStartY,
+                        layout.retrievalArrowX, layout.retrievalArrowEndY,
+                        'Retrieval Strategy r',
+                        colors.primary,
+                        retrievalArrowProgress,
+                        2
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_RETRIEVAL_SET;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_RETRIEVAL_SET:
+                    drawLeftComplete();
+                    drawRightComplete();
+                    drawTestingSectionComplete();
+                    drawCrossArrowComplete();
+                    drawRetrievalArrowComplete();
+                    
+                    const retrievalSetProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawRetrievalSet(
+                        layout.retrievalSetX, layout.retrievalSetY,
+                        layout.retrievalSetWidth, layout.retrievalSetHeight,
+                        retrievalSetProgress
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_FIFTH_ARROWS;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_FIFTH_ARROWS:
+                    drawAllPreviousComplete();
+                    
+                    const fifthArrowDelay = 15;
+                    if (t > fifthArrowIndex * fifthArrowDelay && fifthArrowIndex < 3) {
+                        fifthArrowIndex++;
+                    }
+                    
+                    if (fifthArrowIndex > 0) {
+                        const progress1 = fifthArrowIndex === 1 
+                            ? easeOutCubic(Math.min(1, (t - 0 * fifthArrowDelay) / 15))
+                            : 1;
+                        drawStraightArrow(
+                            layout.leftSectionCenterX, 
+                            layout.boxY + layout.boxHeight,
+                            layout.fifthSectionCenterX, 
+                            layout.promptBoxY - 10,
+                            'Task Info',
+                            colors.primary,
+                            progress1,
+                            2
+                        );
+                    }
+                    
+                    if (fifthArrowIndex > 1) {
+                        const progress2 = fifthArrowIndex === 2 
+                            ? easeOutCubic(Math.min(1, (t - 1 * fifthArrowDelay) / 15))
+                            : 1;
+                        drawStraightArrow(
+                            layout.retrievalSetCenterX,
+                            layout.retrievalSetY + layout.retrievalSetHeight,
+                            layout.fifthSectionCenterX,
+                            layout.promptBoxY - 10,
+                            'Retrieved Examples',
+                            colors.accent1,
+                            progress2,
+                            2
+                        );
+                    }
+                    
+                    if (fifthArrowIndex > 2) {
+                        const progress3 = fifthArrowIndex === 3 
+                            ? easeOutCubic(Math.min(1, (t - 2 * fifthArrowDelay) / 15))
+                            : 1;
+                        drawStraightArrow(
+                            layout.xqueryCenterX,
+                            layout.xqueryY + layout.xqueryHeight,
+                            layout.fifthSectionCenterX,
+                            layout.promptBoxY - 10,
+                            'Query',
+                            colors.secondary,
+                            progress3,
+                            2
+                        );
+                    }
+                    
+                    if (fifthArrowIndex >= 3 && t > 3 * fifthArrowDelay + 15) {
+                        phase = PHASES.SHOW_PROMPT_BOX;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_PROMPT_BOX:
+                    drawAllPreviousComplete();
+                    drawFifthArrowsComplete();
+                    
+                    const promptBoxProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawPromptBox(
+                        layout.promptBoxX,
+                        layout.promptBoxY,
+                        layout.promptBoxWidth,
+                        layout.promptBoxHeight,
+                        promptBoxProgress
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_PROMPT_CONTENT;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_PROMPT_CONTENT:
+                    drawAllPreviousComplete();
+                    drawFifthArrowsComplete();
+                    drawPromptBox(
+                        layout.promptBoxX,
+                        layout.promptBoxY,
+                        layout.promptBoxWidth,
+                        layout.promptBoxHeight,
+                        1
+                    );
+                    
+                    const promptLineDelay = 8;
+                    if (t > promptLine * promptLineDelay && promptLine < promptContent.length) {
+                        promptLine++;
+                    }
+                    
+                    let promptY = layout.promptBoxY + 40;
+                    for (let i = 0; i < promptLine; i++) {
+                        const line = promptContent[i];
+                        promptY = drawText(
+                            line,
+                            layout.promptBoxX + 20,
+                            promptY,
+                            layout.promptBoxWidth - 40,
+                            18,
+                            colors.text,
+                            1,
+                            false,
+                            true
+                        ) + 5;
+                    }
+                    
+                    if (promptLine >= promptContent.length && t > promptLine * promptLineDelay + 15) {
+                        phase = PHASES.SHOW_PROMPT_TO_M_ARROW;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_PROMPT_TO_M_ARROW:
+                    drawAllPreviousComplete();
+                    drawFifthArrowsComplete();
+                    drawPromptComplete();
+                    
+                    const promptToMProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawStraightArrow(
+                        layout.fifthSectionCenterX,
+                        layout.promptBoxY + layout.promptBoxHeight,
+                        layout.fifthSectionCenterX,
+                        layout.MBoxY - 10,
+                        'Input',
+                        colors.accent2,
+                        promptToMProgress,
+                        2
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_M_BOX;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_M_BOX:
+                    drawAllPreviousComplete();
+                    drawFifthArrowsComplete();
+                    drawPromptComplete();
+                    drawPromptToMArrowComplete();
+                    
+                    const mBoxProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawMBox(
+                        layout.MBoxX,
+                        layout.MBoxY,
+                        layout.MBoxWidth,
+                        layout.MBoxHeight,
+                        mBoxProgress
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_M_TO_Y_ARROW;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_M_TO_Y_ARROW:
+                    drawAllPreviousComplete();
+                    drawFifthArrowsComplete();
+                    drawPromptComplete();
+                    drawPromptToMArrowComplete();
+                    drawMBoxComplete();
+                    
+                    const mToYProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawStraightArrow(
+                        layout.fifthSectionCenterX,
+                        layout.MBoxY + layout.MBoxHeight,
+                        layout.fifthSectionCenterX,
+                        layout.yY - 10,
+                        'Output',
+                        colors.primary,
+                        mToYProgress,
+                        2
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.SHOW_Y;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.SHOW_Y:
+                    drawAllPreviousComplete();
+                    drawFifthArrowsComplete();
+                    drawPromptComplete();
+                    drawPromptToMArrowComplete();
+                    drawMBoxComplete();
+                    drawMToYArrowComplete();
+                    
+                    const yProgress = easeOutCubic(Math.min(1, t / 20));
+                    drawY(
+                        layout.yX,
+                        layout.yY,
+                        layout.ySize,
+                        yProgress
+                    );
+                    
+                    if (t > 30) {
+                        phase = PHASES.DONE;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.DONE:
+                    drawAllComplete();
+                    
+                    if (t > 15) {
+                        phase = PHASES.LOOP;
+                        t = 0;
+                    }
+                    break;
+
+                case PHASES.LOOP:
+                    drawAllComplete();
+                    
+                    if (t > LOOP_DELAY / (SPEED * 2)) {
+                        resetAnimation();
+                    }
+                    break;
+            }
+            
+            // 恢复上下文状态
+            ctx.restore();
+
+            requestAnimationFrame(frame);
+        }
+
+        // 绘制左侧完整内容
+        function drawLeftComplete() {
+            setFont(24, true);
+            ctx.fillStyle = colors.primary;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Task Description', layout.leftSectionCenterX, layout.leftTitleY);
+            
+            drawBox(
+                layout.boxX, layout.boxY,
+                layout.boxWidth, layout.boxHeight,
+                1
+            );
+            
+            let yPos = layout.boxY + 15;
+            taskContent.forEach(line => {
+                const isHeading = line.startsWith('####');
+                
+                yPos = drawText(
+                    line,
+                    layout.boxX + 15,
+                    yPos,
+                    layout.boxWidth - 30,
+                    18,
+                    isHeading ? colors.secondary : colors.text,
+                    1,
+                    isHeading,
+                    true
+                ) + 3;
+            });
+        }
+
+        // 绘制数据集和箭头
+        function drawDatasetsWithArrows() {
+            datasets.forEach((dataset, i) => {
+                const xPos = layout.datasetStartX + i * layout.datasetSpacing;
+                drawDatasetCard(
+                    xPos, layout.datasetStartY,
+                    dataset.name, dataset.color,
+                    1
+                );
+                
+                const cardX = layout.datasetStartX + i * layout.datasetSpacing;
+                const cardCenterX = cardX + 90;
+                const cardBottomY = layout.datasetStartY + 50;
+                
+                const trainTargetX = layout.trainCenterX;
+                const trainControlX = cardCenterX + (trainTargetX - cardCenterX) / 2;
+                const trainControlY = layout.datasetStartY + 70;
+                drawCurvedArrow(
+                    cardCenterX, cardBottomY,
+                    trainTargetX, layout.trainTestY,
+                    trainControlX, trainControlY,
+                    dataset.color
+                );
+                
+                const testTargetX = layout.testCenterX;
+                const testControlX = cardCenterX + (testTargetX - cardCenterX) / 2;
+                const testControlY = layout.datasetStartY + 90;
+                drawCurvedArrow(
+                    cardCenterX, cardBottomY,
+                    testTargetX, layout.trainTestY,
+                    testControlX, testControlY,
+                    dataset.color
+                );
+            });
+        }
+
+        // 绘制右侧完整内容
+        function drawRightComplete() {
+            setFont(24, true);
+            ctx.fillStyle = colors.secondary;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Datasets', layout.rightTitleX, layout.rightTitleY);
+            
+            drawDatasetsWithArrows();
+            
+            drawTrainTestLabel(
+                layout.trainX, layout.trainTestY,
+                'Training(D)', 800,
+                colors.primary, 1
+            );
+            drawTrainTestLabel(
+                layout.testX, layout.trainTestY,
+                'Testing(x)', 200,
+                colors.secondary, 1
+            );
+        }
+
+        // 绘制第三部分完整内容
+        function drawRetrievalSectionComplete() {
+            drawStraightArrow(
+                layout.retrievalArrowX, layout.retrievalArrowStartY,
+                layout.retrievalArrowX, layout.retrievalArrowEndY,
+                'Retrieval Strategy',
+                colors.primary,
+                1,
+                2
+            );
+            
+            drawRetrievalSet(
+                layout.retrievalSetX, layout.retrievalSetY,
+                layout.retrievalSetWidth, layout.retrievalSetHeight,
+                1
+            );
+        }
+
+        // 绘制检索箭头完整
+        function drawRetrievalArrowComplete() {
+            drawStraightArrow(
+                layout.retrievalArrowX, layout.retrievalArrowStartY,
+                layout.retrievalArrowX, layout.retrievalArrowEndY,
+                'Retrieval Strategy',
+                colors.primary,
+                1,
+                2
+            );
+        }
+
+        // 绘制第四部分完整内容
+        function drawTestingSectionComplete() {
+            drawStraightArrow(
+                layout.testingArrowX, layout.testingArrowStartY,
+                layout.testingArrowX, layout.testingArrowEndY,
+                'For each element xquery in X',
+                colors.secondary,
+                1,
+                2
+            );
+            
+            drawXQuery(
+                layout.xqueryX, layout.xqueryY,
+                layout.xqueryWidth, layout.xqueryHeight,
+                1
+            );
+        }
+
+        // 绘制交叉箭头完整
+        function drawCrossArrowComplete() {
+            drawStraightArrow(
+                layout.crossArrowStartX, layout.crossArrowY,
+                layout.crossArrowEndX, layout.crossArrowY,
+                'xquery',
+                colors.secondary,
+                1,
+                2
+            );
+        }
+
+        // 绘制第五部分箭头完整
+        function drawFifthArrowsComplete() {
+            drawStraightArrow(
+                layout.leftSectionCenterX,
+                layout.boxY + layout.boxHeight,
+                layout.fifthSectionCenterX,
+                layout.promptBoxY - 10,
+                'Task Info',
+                colors.primary,
+                1,
+                2
+            );
+            
+            drawStraightArrow(
+                layout.retrievalSetCenterX,
+                layout.retrievalSetY + layout.retrievalSetHeight,
+                layout.fifthSectionCenterX,
+                layout.promptBoxY - 10,
+                'Retrieved Examples',
+                colors.accent1,
+                1,
+                2
+            );
+            
+            drawStraightArrow(
+                layout.xqueryCenterX,
+                layout.xqueryY + layout.xqueryHeight,
+                layout.fifthSectionCenterX,
+                layout.promptBoxY - 10,
+                'Query',
+                colors.secondary,
+                1,
+                2
+            );
+        }
+
+        // 绘制Prompt完整
+        function drawPromptComplete() {
+            drawPromptBox(
+                layout.promptBoxX,
+                layout.promptBoxY,
+                layout.promptBoxWidth,
+                layout.promptBoxHeight,
+                1
+            );
+            
+            let promptY = layout.promptBoxY + 40;
+            promptContent.forEach(line => {
+                promptY = drawText(
+                    line,
+                    layout.promptBoxX + 20,
+                    promptY,
+                    layout.promptBoxWidth - 40,
+                    18,
+                    colors.text,
+                    1,
+                    false,
+                    true
+                ) + 5;
+            });
+        }
+
+        // 绘制Prompt到M箭头完整
+        function drawPromptToMArrowComplete() {
+            drawStraightArrow(
+                layout.fifthSectionCenterX,
+                layout.promptBoxY + layout.promptBoxHeight,
+                layout.fifthSectionCenterX,
+                layout.MBoxY - 10,
+                'Input',
+                colors.accent2,
+                1,
+                2
+            );
+        }
+
+        // 绘制M方框完整
+        function drawMBoxComplete() {
+            drawMBox(
+                layout.MBoxX,
+                layout.MBoxY,
+                layout.MBoxWidth,
+                layout.MBoxHeight,
+                1
+            );
+        }
+
+        // 绘制M到y箭头完整
+        function drawMToYArrowComplete() {
+            drawStraightArrow(
+                layout.fifthSectionCenterX,
+                layout.MBoxY + layout.MBoxHeight,
+                layout.fifthSectionCenterX,
+                layout.yY - 10,
+                'Output',
+                colors.primary,
+                1,
+                2
+            );
+        }
+
+        // 绘制y完整
+        function drawYComplete() {
+            drawY(
+                layout.yX,
+                layout.yY,
+                layout.ySize,
+                1
+            );
+        }
+
+        // 绘制所有之前的部分完整
+        function drawAllPreviousComplete() {
+            drawLeftComplete();
+            drawRightComplete();
+            drawTestingSectionComplete();
+            drawCrossArrowComplete();
+            drawRetrievalSectionComplete();
+        }
+
+        // 绘制所有部分完整
+        function drawAllComplete() {
+            drawAllPreviousComplete();
+            drawFifthArrowsComplete();
+            drawPromptComplete();
+            drawPromptToMArrowComplete();
+            drawMBoxComplete();
+            drawMToYArrowComplete();
+            drawYComplete();
+        }
+
+        // 开始动画
+        function startAnimation() {
+            resetAnimation();
+            requestAnimationFrame(frame);
+        }
+
+        startAnimation();
+    })();
+    </script>
+</body>
+</html>

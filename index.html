@@ -1,0 +1,1130 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Our work demonstrates a definitive shift beyond one-size-fits-all moderation, establishing ICL as a practical, privacy-preserving, and highly adaptable pathway for the next generation of user-centric content safety systems.">
+  <meta name="keywords" content="In-context Learning, Harmful Text Detection, Personalized, Classification">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beyond One-Size-Fits-All: Personalized Harmful Content Detection with In-Context Learning</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-"></script> -->
+  <!-- <script> -->
+  <!--   window.dataLayer = window.dataLayer || []; -->
+
+  <!--   function gtag() { -->
+  <!--     dataLayer.push(arguments); -->
+  <!--   } -->
+
+  <!--   gtag('js', new Date()); -->
+
+  <!--   gtag('config', 'G-'); -->
+  <!-- </script> -->
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.ico">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-2 publication-title">Beyond One-Size-Fits-All: Personalized Harmful Content Detection with In-Context Learning</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+	      		Rufan Zhang<sup>1</sup>,
+	    	</span>
+            <span class="author-block">
+              Lin Zhang<sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://xianghang.me">Xianghang Mi</a><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>University of Science and Technology of China</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/ChaseSecurity/personalizable_harmful_content_detection"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <span class="link-block">
+                <a href="https://huggingface.co/datasets/ChaseLabs/Harmful-Texts-On-Mastodon"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a>
+	      </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Abstract. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+	    	The proliferation of harmful online content—e.g., toxicity, spam, and negative sentiment—demands robust and adaptable moderation systems. However, prevailing moderation systems are centralized and task-specific, offering limited transparency and neglecting diverse user preferences—an approach ill-suited for privacy-sensitive or decentralized environments. We propose a novel framework that leverages in-context learning (ICL) with foundation models to unify the detection of toxicity, spam, and negative sentiment across binary, multi-class, and multi-label settings. Crucially, our approach enables lightweight personalization, allowing users to easily block new categories, unblock existing ones, or extend detection to semantic variations through simple prompt-based interventions—all without model retraining.Extensive experiments on public benchmarks (TextDetox, UCI SMS, SST2) and a new, annotated Mastodon dataset reveal that: (i) foundation models achieve strong cross-task generalization, often matching or surpassing task-specific fine-tuned models; (ii) effective personalization is achievable with as few as one user-provided example or definition; and (iii) augmenting prompts with label definitions or rationales significantly enhances robustness to noisy, real-world data.Our work demonstrates a definitive shift beyond one-size-fits-all moderation, establishing ICL as a practical, privacy-preserving, and highly adaptable pathway for the next generation of user-centric content safety systems.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered"> -->
+    <!--   <div class="column is-four-fifths"> -->
+    <!--     <h2 class="title is-3">Video</h2> -->
+    <!--     <div class="publication-video"> -->
+    <!--       <iframe src="#" -->
+    <!--               frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!-- </div> -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+<!-- Defining Harmful Texts. -->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-full">
+		<h2 class="title is-3">Defining Harmful Texts</h2>
+		<p>
+	  		We define <i>harmful texts</i> as content that threatens individual well-being or platform integrity through offensive, manipulative, or negative language. Following prior surveys, we focus on three representative types: <strong>toxicity</strong>, <strong>spam</strong>, and <strong>negative sentiment</strong>.Toxicity covers harassment, hate, and profanity; spam denotes unsolicited or manipulative messages such as promotions or link flooding; and negative sentiment reflects emotionally harmful expressions (e.g., anger or despair) with psychosocial impacts. Together, these categories balance conceptual breadth and empirical feasibility.
+		</p>
+		
+		<div class="container is-max-desktop content has-text-centered">
+			<div class="columns is-centered">
+				<div class="column is-four-fifths">
+					<!-- 表格标题：调整为与图片标题一致的样式 -->
+					<p class="has-text-centered is-size-5 mt-3 mb-3" style="margin-bottom: 1rem; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">Overview of datasets.</p>
+					
+					<!-- 三线表 -->
+					<table class="three-line-table" style="width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 1rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+						<!-- 表头 -->
+						<thead>
+							<!-- 顶部横线（新增，列名上方的粗线） -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+							<!-- 列名 -->
+							<tr>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Task</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Dataset</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Language</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Label</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Train</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Test</th>
+							</tr>
+							<!-- 列名下方的横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Toxicity 部分 -->
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="2">Toxicity</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="2">Textdetox</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="2">English</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">Toxic</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">2,000</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">500</td>
+							</tr>
+							<tr>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">Non-toxic</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">2,000</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">500</td>
+							</tr>
+							<!-- 中间横线（细线） -->
+							<tr>
+								<td colspan="6" style="border-bottom: 1px solid #333; padding: 0;"></td>
+							</tr>
+							
+							<!-- Spam 部分 -->
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="2">Spam</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="2">UCI</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="2">English</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">Spam</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">586</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">161</td>
+							</tr>
+							<tr>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">Ham</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">3,873</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">954</td>
+							</tr>
+							<!-- 中间横线（细线） -->
+							<tr>
+								<td colspan="6" style="border-bottom: 1px solid #333; padding: 0;"></td>
+							</tr>
+							
+							<!-- Sentiment 部分 -->
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="2">Sentiment</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="2">SST2</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="2">English</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">Negative</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">29,780</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">428</td>
+							</tr>
+							<tr>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">Positive</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">37,569</td>
+								<td style="padding: 10px; text-align: center; font-weight: 700;">444</td>
+							</tr>
+							<!-- 底部横线（粗线） -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--In-Context Learning Tasks. -->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-full">
+		<h2 class="title is-3">In-Context Learning Tasks</h2>
+		<p>
+	  		Building upon the datasets introduced earlier, we now provide a formal definition of the learning tasks designed to enable multi-task and personalized harmful content detection using in-context learning (ICL). The evaluation of these tasks will be detailed in subsequent sections.
+		</p>
+		<p>
+			Let \(\mathcal{X}\) denote the input space, \(\mathcal{Y}\) the label space, and \(t\) a natural-language task instruction. We define \(D_k^{r} = \{ (x_1, y_1), (x_2, y_2), \dots, (x_k, y_k) \} \subseteq D\) as a set of \(k\) demonstration examples retrieved from dataset \(D\) under retrieval strategy \(r\). Let \(x_{\text{query}} \in \mathcal{X}\) denote a new input under evaluation (i.e., the query sample), and let \(\mathcal{M}\) denote the foundation model employed for in-context learning. The predicted output \(y_{\text{query}}\) is defined as:
+						$$    y_{\text{query}} = \mathcal{M}(t,\,D_k^{r},\, x_{\text{query}}).$$
+			This formulation represents the general ICL process. For classification tasks, we typically employ <strong>greedy decoding</strong> to select the most probable label from the model's vocabulary that matches a label in \(\mathcal{Y}\). This can be formalized as:
+						\[ y_{\text{query}} = \operatorname*{arg\,max}_{y \in \mathcal{Y}} P_{\mathcal{M}}\left(y \mid t,\, D_{k}^{r},\, x_{\text{query}}\right), \]
+			where \(P_{\mathcal{M}}\) represents the model's conditional probability distribution over its vocabulary.
+		</p>
+		<p>
+			<strong>Remark.</strong> In our experiments, we primarily adopt demonstrations of the form \((x_i, y_i)\), i.e., input--label pairs. Only in the wild data experiments do we extend demonstrations with reasons \((x_i, y_i, e_i)\), where \(e_i\) provides a textual rationale for the assigned label.
+		</p>
+		<p>
+			<strong>Single-Task Harmful Content Classification.</strong> Single-task harmful content classification independently detect each category of harmful content. In this approach, the label space \(\mathcal{Y}\) corresponds to the specific harm category under consideration (e.g., <i>spam</i> and <i>ham</i> for spam detection), and the demonstration set \(D_k^{r}\) is exclusively sampled from the relevant training dataset (e.g., toxicity training datasets for toxicity detection). These independent ICL detectors are collectively referred to as single-task harmful content classifiers.
+		</p>
+		<p>
+			<strong>Multi-Task Harmful Content Classification.</strong> In contrast to single-task classification, multi-task harmful content classification aims to simultaneously detect multiple categories of harmful content. Here, the label space \(\mathcal{Y}\) is defined as the union of all harm categories under consideration. The demonstration set \(D_k^{r}\) is sampled from all relevant training datasets, encompassing examples from each harm category. Depending on the structure of the label space \(\mathcal{Y}\), this task can be further divided into two subcategories: multi-task <i>binary</i> ICL and multi-task <i>multi-class</i> ICL.
+		</p>
+		<p>
+			In multi-task binary ICL, the model distinguishes harmful content from benign content, with the label space defined as \(\mathcal{Y} = \{\textit{harmful}, \textit{benign}\}\), where \(\textit{harmful}\) represents harmful(toxic, spam, negative) content and \(\textit{benign}\) represents non-harmful content. Conversely, in multi-task multi-class ICL, the model assigns harmful content to one of the specific harm categories, with the label space defined as \(\mathcal{Y} = \{\textit{toxic}, \textit{spam}, \textit{negative}, \textit{benign}\}\).
+		</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  -->
+<section class="section" style="padding: 20px 0;">
+  <div style="
+      max-width:900px;
+      margin: 0 auto; 
+      border-radius: 8px;
+      overflow: hidden; 
+      height: 700px; 
+      border: 1px solid #e5e7eb;
+      background: white;">
+      
+    <iframe src="ICL.html" title="In-Context Learning Visualization" 
+            style="width: 100%; height: 100%; border: 0; display: block;">
+    </iframe>
+  </div>  
+</section>
+
+<!--General ICL Settings. -->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-full">
+		<h2 class="title is-3">General ICL Settings</h2>
+		<p>
+	  		<strong>Foundation Models.</strong> evaluate three state-of-the-art open-weight LLM families: Llama, Mistral, and Qwen. We adopt the latest instruction-tuned versions as of July 2024: Llama-3.1-8B-Instruct, Mistral-7B-Instruct-v0.3, and Qwen2-7B-Instruct, balancing performance with evaluation efficiency. Although newer releases exist as of July 2025, they are either incompatible with our setup or show no significant gains. 
+		</p>
+
+		<p>
+			<strong>Prompt Template.</strong> Our prompt consists of three components: the task description \(t\), the demonstration set \(D_k^{r}\), and the query input \(x_{\text{query}}\). 
+		</p>
+		<p>
+    		<strong>Demonstration-Relevant Parameters.</strong>
+			We systematically study demonstration-related parameters.
+			First, we vary the number of demonstrations \(k\), covering zero-shot to many-shot settings.
+			Demonstrations are balanced across all classes unless noted otherwise.
+			Second, we examine different retrieval strategies for selecting \(D_k^{r}\):
+		</p>
+		<ul>
+			<li><i>Random</i>: uniform sampling per label, averaged over three seeds;</li>
+			<li><i>Semantic</i>: retrieves semantically similar examples using dense embeddings from
+			<code>sentence-transformers</code> via <code>retriv</code>;
+			</li>
+			<li><i>Balanced Semantic</i>: semantic retrieval with class balance;</li>
+			<li><i>Lexical</i>: selects examples via BM25, also implemented in
+			<code>retriv</code>;
+			</li>
+			<li><i>Balanced Lexical</i>: BM25 retrieval with class balance.</li>
+		</ul>
+		<p>
+			Finally, we consider <i>rationale-augmented demonstrations</i>
+			\((x_i, y_i, e_i)\),
+			where \(e_i\) explains the label.
+			These are used only in wild data experiments.
+		</p>
+
+		<p>
+			<strong>Task Description.</strong>
+			We design two levels of task descriptions.
+			<i>Level&nbsp;1</i> provides a concise statement of the task and label space,
+			while <i>Level&nbsp;2</i> augments this with detailed definitions for each label.
+			This design is to test whether richer task information improves ICL performance.
+			Unless otherwise stated, Level&nbsp;1 descriptions are used.
+		</p>
+
+		<p>
+			<strong>Inference Setting.</strong>
+			For efficient deployment, we employ <i>vLLM</i>,
+			a high-performance inference engine optimized for LLMs.
+			We adopt <code>GuidedDecodingParams</code> to constrain models to <i>structured outputs</i>,
+			i.e., predictions restricted to the label space without generating irrelevant content.
+			To ensure deterministic and reproducible results, we set the temperature to zero
+			and disable stochastic sampling by configuring top-p to 1 and top-k to -1.
+		</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!--Sinlge-Task ICL-->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-full">
+		<h2 class="title is-3">Single-Task ICL</h2>
+		<p>
+			Our single-task experiments demonstrate that in-context learning (ICL) achieves strong and stable performance across all three binary harmful content detection tasks—spam, sentiment, and toxicity. 
+			ICL performance improves with more demonstrations and stabilizes beyond moderate shot counts, with Balanced Semantic and Balanced Lexical retrieval strategies consistently yielding the best results. 
+			All models reach near-ceiling accuracy on SST-2, while Llama performs best overall, achieving an F1-score of 0.991 on the spam task and 0.971 on toxicity. 
+			Compared to fine-tuned BERT baselines, ICL matches or surpasses performance without requiring gradient updates, underscoring its efficiency, adaptability, and potential as a lightweight alternative for harmful content detection.
+		</p>
+		
+		<!-- 调整后的图片区域：参考示例格式，居中+90%宽度 -->
+		<div style="text-align: center; margin: 24px 0;">
+			<!-- 3×3网格布局，保持响应式 -->
+			<div class="columns is-centered is-variable is-2" style="gap: 1rem; margin: 0 auto; width: 90%;">
+				<!-- 第一列 -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0 0 1rem 0; padding: 0;">
+						<img src="./static/images/single-task_llama_uci_f1.svg" alt="Spam(Llama)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(a) Spam(Llama)</figcaption>
+					</figure>
+					<figure class="image" style="margin: 0 0 1rem 0; padding: 0;">
+						<img src="./static/images/single-task_llama_sst2_f1.svg" alt="Sentiment(Llama)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(d) Sentiment(Llama)</figcaption>
+					</figure>
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/single-task_llama_textdetox_f1.svg" alt="Toxicity(Llama)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(g) Toxicity(Llama)</figcaption>
+					</figure>
+				</div>
+				<!-- 第二列 -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0 0 1rem 0; padding: 0;">
+						<img src="./static/images/single-task_mistral_uci_f1.svg" alt="Spam(Mistral)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(b) Spam(Mistral)</figcaption>
+					</figure>
+					<figure class="image" style="margin: 0 0 1rem 0; padding: 0;">
+						<img src="./static/images/single-task_mistral_sst2_f1.svg" alt="Sentiment(Mistral)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(e) Sentiment(Mistral)</figcaption>
+					</figure>
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/single-task_mistral_textdetox_f1.svg" alt="Toxicity(Mistral)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(h) Toxicity(Mistral)</figcaption>
+					</figure>
+				</div>
+				<!-- 第三列 -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0 0 1rem 0; padding: 0;">
+						<img src="./static/images/single-task_qwen_uci_f1.svg" alt="Spam(Qwen)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(c) Spam(Qwen)</figcaption>
+					</figure>
+					<figure class="image" style="margin: 0 0 1rem 0; padding: 0;">
+						<img src="./static/images/single-task_qwen_sst2_f1.svg" alt="Sentiment(Qwen)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(f) Sentiment(Qwen)</figcaption>
+					</figure>
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/single-task_qwen_textdetox_f1.svg" alt="Toxicity(Qwen)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(i) Toxicity(Qwen)</figcaption>
+					</figure>
+				</div>
+			</div>
+			
+			<!-- 总标题：参考示例的简洁样式 -->
+			<p class="has-text-centered is-size-5 mt-3" style="margin-bottom: 0; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">The performance of ICL on binary classification.</p>
+		</div>
+		
+		<div class="container is-max-desktop content has-text-centered">
+			<div class="columns is-centered">
+				<div class="column is-four-fifths">
+					<!-- 表格标题：调整为统一样式 -->
+					<p class="has-text-centered is-size-5 mt-3 mb-3" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold;">Comparison of best F1-score for different model-retrieval pairs across tasks.</p>
+					
+					<!-- 三线表 -->
+					<table class="three-line-table" style="width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 1rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+						<!-- 表头 -->
+						<thead>
+							<!-- 顶部横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+							<!-- 列名 -->
+							<tr>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Model</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Retrieval Method</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Average</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Spam</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Sentiment</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700;">Toxicity</th>
+							</tr>
+							<!-- 列名下方的横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Bert(Baseline) 部分 -->
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Bert(Baseline)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">-</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.959</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.985</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.923</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.969</td>
+							</tr>
+							<!-- 中间横线（细线） -->
+							<tr>
+								<td colspan="6" style="border-bottom: 1px solid #333; padding: 0;"></td>
+							</tr>
+							
+							<!-- Llama 部分 -->
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="3">Llama</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Random</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.967</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.970 (128)<sup>1</sup></td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.959 (16)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.971 (128)</td>
+							</tr>
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Balanced Lexical</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.965</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.991 (128)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.939 (16)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.966 (128)</td>
+							</tr>
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Balanced Semantic</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.970</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.994 (128)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.945 (128)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.971 (64)</td>
+							</tr>
+							<!-- 中间横线（细线） -->
+							<tr>
+								<td colspan="6" style="border-bottom: 1px solid #333; padding: 0;"></td>
+							</tr>
+							
+							<!-- Qwen 部分 -->
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="3">Qwen</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Random</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.940</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.906 (128)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.958 (64)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.957 (8)</td>
+							</tr>
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Balanced Lexical</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.954</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.971 (128)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.942 (64)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.950 (8)</td>
+							</tr>
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Balanced Semantic</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.950</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.961 (128)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.936 (16)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.954 (8)</td>
+							</tr>
+							<!-- 中间横线（细线） -->
+							<tr>
+								<td colspan="6" style="border-bottom: 1px solid #333; padding: 0;"></td>
+							</tr>
+							
+							<!-- Mistral 部分 -->
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;" rowspan="3">Mistral</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Random</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.943</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.920 (64)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.953 (4)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.957 (8)</td>
+							</tr>
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Balanced Lexical</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.943</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.943 (64)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.936 (128)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.949 (8)</td>
+							</tr>
+							<tr>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">Balanced Semantic</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.952</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.957 (64)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.943 (8)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.955 (64)</td>
+							</tr>
+							<!-- 底部横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<!-- 表格注释 -->
+					<p style="font-size: 0.9rem; text-align: left; margin-top: 8px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+						<sup>1</sup> <strong>F1-score (Number of Shots)</strong>: The F1-score achieved by the model-retrieval pair, followed by the number of shots used in that configuration.
+					</p>
+				</div>
+			</div>
+		</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Multi-Task binary ICL-->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-full">
+		<h2 class="title is-3">Multi-Task Binary ICL</h2>
+		<p>
+			In the multi-task binary setting, ICL demonstrates strong generalization across heterogeneous harmful content categories. 
+			Among retrieval strategies, Random consistently yields the best overall performance, while Balanced Semantic performs better at smaller shot counts. 
+			Llama-Random achieves the highest F1-score of 0.918 at 192 shots, followed closely by Qwen and Mistral. 
+			Compared with single-task ICL, multi-task models maintain similar recall but suffer higher false positive rates, as exposure to diverse harm types broadens their decision boundaries. 
+			Enhancing task descriptions with explicit definitions (Level 2 prompts) significantly mitigates this issue, improving Llama-Random’s F1 to 0.934 and reducing false positives, demonstrating that richer prompt information enhances model discrimination and robustness in multi-task moderation.
+		</p>
+
+		<!-- 三图并排布局：统一格式调整 -->
+		<div style="text-align: center; margin: 24px 0;">
+			<div class="columns is-centered is-variable is-2" style="gap: 1rem; margin: 0 auto; width: 90%;">
+				<!-- 第一列：Llama -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/multi-task_binary_llama_f1.svg" alt="Llama F1-score" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(a) Llama</figcaption>
+					</figure>
+				</div>
+				<!-- 第二列：Mistral -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/multi-task_binary_mistral_f1.svg" alt="Mistral F1-score" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(b) Mistral</figcaption>
+					</figure>
+				</div>
+				<!-- 第三列：Qwen -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/multi-task_binary_qwen_f1.svg" alt="Qwen F1-score" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(c) Qwen</figcaption>
+					</figure>
+				</div>
+			</div>
+			<!-- 总标题 -->
+			<p class="has-text-centered is-size-5 mt-3" style="margin-bottom: 0; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">The performance of multi-task binary ICL, as measured by F1-score.</p>
+		</div>
+
+		<!-- 六图2行3列布局：统一格式调整 -->
+		<div style="text-align: center; margin: 24px 0;">
+			<div style="width: 90%; margin: 0 auto;">
+				<!-- 第一行：Recall指标 -->
+				<div class="columns is-centered is-variable is-2" style="gap: 1rem; margin: 0 0 1.5rem 0;">
+					<div class="column is-4" style="padding: 0;">
+						<figure class="image" style="margin: 0; padding: 0;">
+							<img src="./static/images/uci_multi-task_binary_L12_recall.svg" alt="UCI(Recall) comparison" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+							<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(a) UCI(Recall)</figcaption>
+						</figure>
+					</div>
+					<div class="column is-4" style="padding: 0;">
+						<figure class="image" style="margin: 0; padding: 0;">
+							<img src="./static/images/sst2_multi-task_binary_L12_recall.svg" alt="SST2(Recall) comparison" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+							<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(b) SST2(Recall)</figcaption>
+						</figure>
+					</div>
+					<div class="column is-4" style="padding: 0;">
+						<figure class="image" style="margin: 0; padding: 0;">
+							<img src="./static/images/textdetox_multi-task_binary_L12_recall.svg" alt="Textdetox(Recall) comparison" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+							<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(c) Textdetox(Recall)</figcaption>
+						</figure>
+					</div>
+				</div>
+				<!-- 第二行：FPR指标 -->
+				<div class="columns is-centered is-variable is-2" style="gap: 1rem; margin: 0;">
+					<div class="column is-4" style="padding: 0;">
+						<figure class="image" style="margin: 0; padding: 0;">
+							<img src="./static/images/uci_multi-task_binary_L12_fpr.svg" alt="UCI(FPR) comparison" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+							<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(d) UCI(FPR)</figcaption>
+						</figure>
+					</div>
+					<div class="column is-4" style="padding: 0;">
+						<figure class="image" style="margin: 0; padding: 0;">
+							<img src="./static/images/sst2_multi-task_binary_L12_fpr.svg" alt="SST2(FPR) comparison" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+							<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(e) SST2(FPR)</figcaption>
+						</figure>
+					</div>
+					<div class="column is-4" style="padding: 0;">
+						<figure class="image" style="margin: 0; padding: 0;">
+							<img src="./static/images/textdetox_multi-task_binary_L12_fpr.svg" alt="Textdetox(FPR) comparison" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+							<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(f) Textdetox(FPR)</figcaption>
+						</figure>
+					</div>
+				</div>
+			</div>
+			<!-- 总标题 -->
+			<p class="has-text-centered is-size-5 mt-3" style="margin-bottom: 0; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">The performance comparison for Llama-Random between multi-task binary ICL and single-task binary ICL, as measured by recall and false positive rate(FPR).</p>
+		</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Multi-Task Multi-Class ICL-->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-full">
+		<h2 class="title is-3">Multi-Task Multi-Class ICL</h2>
+		<p>
+			In the multi-task multi-class setting, ICL exhibits strong generalization across toxicity, spam, and negative sentiment categories. 
+			Fine-grained Balanced Semantic retrieval performs better with fewer demonstrations, while Random retrieval surpasses it as the number of shots increases. 
+			Qwen and Llama achieve the best overall performance, both reaching a weighted F1-score of 0.938 at 192 shots, with Llama selected for further analysis due to its consistent robustness. 
+			Detailed evaluation reveals that Llama distinguishes harmful categories effectively once harmfulness is detected but often confuses benign and negative texts, reflecting the semantic ambiguity between them. 
+			Introducing richer Level 2 task descriptions further improves performance, boosting F1 to 0.955 and reducing false positives, confirming that explicit label definitions enhance precision and model stability in fine-grained harmful content classification.
+		</p>
+
+		<!-- 三图并排布局：统一格式调整 -->
+		<div style="text-align: center; margin: 24px 0;">
+			<div class="columns is-centered is-variable is-2" style="gap: 1rem; margin: 0 auto; width: 90%;">
+				<!-- 第一列：Llama -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/multi-task_mul_llama_f1.svg" alt="Llama multi-class F1-score" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(a) Llama</figcaption>
+					</figure>
+				</div>
+				<!-- 第二列：Mistral -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/multi-task_mul_mistral_f1.svg" alt="Mistral multi-class F1-score" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(b) Mistral</figcaption>
+					</figure>
+				</div>
+				<!-- 第三列：Qwen -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/multi-task_mul_qwen_f1.svg" alt="Qwen multi-class F1-score" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(c) Qwen</figcaption>
+					</figure>
+				</div>
+			</div>
+			<!-- 总标题 -->
+			<p class="has-text-centered is-size-5 mt-3" style="margin-bottom: 0; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">The overall performance of multi-task multi-class ICL.</p>
+		</div>
+
+		<!-- 二图并排布局：统一格式调整 -->
+		<div style="text-align: center; margin: 24px 0;">
+			<div class="columns is-centered is-variable is-2" style="gap: 1rem; margin: 0 auto; width: 90%;">
+				<!-- 第一列：Level 1 prompt -->
+				<div class="column is-6" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/multi-task_mul_llama_cm192.svg" alt="Llama-Random confusion matrix (Level 1 prompt)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(a) Level 1 prompt</figcaption>
+					</figure>
+				</div>
+				<!-- 第二列：Level 2 prompt -->
+				<div class="column is-6" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/multi-task_mul_llama_cm192_l2.svg" alt="Llama-Random confusion matrix (Level 2 prompt)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(b) Level 2 prompt</figcaption>
+					</figure>
+				</div>
+			</div>
+			<!-- 总标题 -->
+			<p class="has-text-centered is-size-5 mt-3" style="margin-bottom: 0; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">The confusion matrix of Llama-Random (192 shots) in multi-task multi-class ICL.</p>
+		</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Personalization with ICL-->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-full">
+		<h2 class="title is-3">Personalization with ICL</h2>
+		<p>
+			This section explores the personalization capability of In-Context Learning (ICL) for harmful content detection, addressing the limitations of traditional one-size-fits-all moderation systems. 
+			The study investigates whether ICL can efficiently adapt to individual user preferences without retraining, focusing on three realistic personalization scenarios: 
+			(1) blocking a new harmful category, 
+			(2) unblocking an existing one, and 
+			(3) blocking semantic variations of specific harmful examples.
+		</p>
+
+		<p>
+			In the first scenario, ICL effectively adapts to unseen harmful categories such as toxicity, even with minimal examples. 
+			Adding just one or two new samples rapidly stabilizes performance, and richer task descriptions (Level 2 prompts) further improve results at smaller demonstration counts. 
+			This demonstrates that ICL can expand its coverage of harmful types with very limited supervision while maintaining generalization across known categories.
+		</p>
+		<!-- 二图并排布局（Scenario 1）：统一格式调整 -->
+		<div style="text-align: center; margin: 24px 0;">
+			<div class="columns is-centered is-variable is-2" style="gap: 1rem; margin: 0 auto; width: 90%;">
+				<!-- 第一列：Level 1 Prompt -->
+				<div class="column is-6" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/per_block_new_succ_rate_l1.svg" alt="Blocking new harmful texts (Level 1 Prompt)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(a) Level 1 Prompt</figcaption>
+					</figure>
+				</div>
+				<!-- 第二列：Level 2 Prompt -->
+				<div class="column is-6" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/per_block_new_succ_rate_l2.svg" alt="Blocking new harmful texts (Level 2 Prompt)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(b) Level 2 Prompt</figcaption>
+					</figure>
+				</div>
+			</div>
+			<!-- 总标题 -->
+			<p class="has-text-centered is-size-5 mt-3" style="margin-bottom: 0; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">The performance of blocking new harmful texts. Note: Baseline represents use original multi-task binary ICL(UCI, SST2) to detect toxicity (Textdetox).</p>
+		</div>
+
+		<p>
+			In the unblocking scenario, where certain harmful types are redefined as benign, ICL exhibits a balance between prior harmfulness knowledge and user-specific redefinitions. 
+			A small number of re-labeled examples or explicit definitions enables the model to override previous categorizations effectively, confirming that user-driven recalibration can be achieved with few-shot personalization.
+		</p>
+		<!-- 二图并排布局（Scenario 2）：统一格式调整 -->
+		<div style="text-align: center; margin: 24px 0;">
+			<div class="columns is-centered is-variable is-2" style="gap: 1rem; margin: 0 auto; width: 90%;">
+				<!-- 第一列：Level 1 Prompt -->
+				<div class="column is-6" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/per_unblock_succ_rate_l1.svg" alt="Unblocking known harmful texts (Level 1 Prompt)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(a) Level 1 Prompt</figcaption>
+					</figure>
+				</div>
+				<!-- 第二列：Level 2 Prompt -->
+				<div class="column is-6" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/per_unblock_succ_rate_l2.svg" alt="Unblocking known harmful texts (Level 2 Prompt)" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(b) Level 2 Prompt</figcaption>
+					</figure>
+				</div>
+			</div>
+			<!-- 总标题 -->
+			<p class="has-text-centered is-size-5 mt-3" style="margin-bottom: 0; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">The performance of unblocking a known category of harmful texts. Note: Baseline represents using original multi-task binary ICL(Textdetox, UCI, SST2) to unblock toxicity (Textdetox).</p>
+		</div>
+
+		<p>
+			Finally, in the instance-level blocking scenario, ICL successfully learns to filter out perturbed variants of a harmful text. 
+			While adding one example suffices to generalize across variations, excessive perturbations can introduce semantic noise and degrade performance, especially for spam. 
+		</p>
+		<!-- 三图并排布局（Scenario 3）：统一格式调整 -->
+		<div style="text-align: center; margin: 24px 0;">
+			<div class="columns is-centered is-variable is-2" style="gap: 1rem; margin: 0 auto; width: 90%;">
+				<!-- 第一列：Toxic -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/per_block_var_textdetox.svg" alt="Blocking variants of toxic texts" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(a) Toxic</figcaption>
+					</figure>
+				</div>
+				<!-- 第二列：Spam -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/per_block_var_uci.svg" alt="Blocking variants of spam texts" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(b) Spam</figcaption>
+					</figure>
+				</div>
+				<!-- 第三列：Negative -->
+				<div class="column is-4" style="padding: 0;">
+					<figure class="image" style="margin: 0; padding: 0;">
+						<img src="./static/images/per_block_var_sst2.svg" alt="Blocking variants of negative texts" style="object-fit: cover; width: 100%; height: auto; border-radius: 4px;">
+						<figcaption class="has-text-centered is-size-6 mt-1" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; line-height: 1.4;">(c) Negative</figcaption>
+					</figure>
+				</div>
+			</div>
+			<!-- 总标题 -->
+			<p class="has-text-centered is-size-5 mt-3" style="margin-bottom: 0; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">The success rate of blocking variants of specific harmful texts. Baseline: The original harmful text is not in the prompt. 0-perturbation: The original text is included, but no perturbed variants are.</p>
+		</div>
+		<p>
+			Overall, these findings highlight ICL’s adaptability, enabling effortless expansion, flexible redefinition, and fine-grained control in personalized moderation — all without model retraining.
+		</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--Evaluation on Wild Data-->
+<section class="section">
+  <div class="container is-max-desktop content">
+    <div class="columns is-centered">
+      <div class="column is-full">
+		<h2 class="title is-3">Evaluation on Wild Data</h2>
+		<p>
+			This section evaluates the robustness and generalizability of In-Context Learning (ICL) on <em>wild data</em>—real-world, uncurated social media posts that exhibit domain shifts, noisy labels, and overlapping harmful categories. 
+			Unlike benchmark datasets, which are clean and well-structured, wild data better reflects the challenges faced by real-world moderation systems. 
+			To this end, a new dataset of 3,000 annotated Mastodon posts was constructed, each labeled under binary, multi-class, and multi-label schemes to capture the inherent ambiguity and overlap of real-world content.
+		</p>
+
+		<p>
+			In the <strong>multi-task binary</strong> setting, ICL experiences a noticeable performance drop when trained on benchmark-based demonstrations and tested on wild data—F1 decreases from 0.887 to 0.795—highlighting domain transfer challenges. 
+			Replacing demonstrations with wild data does not solve this issue due to higher noise levels. 
+			However, enriching each demonstration with model-generated rationales markedly improves robustness, boosting precision to 0.966 and F1 to 0.875. 
+			These results confirm that incorporating interpretive signals mitigates noise sensitivity and enhances model reliability in uncontrolled environments.
+		</p>
+		
+		<!-- 多任务二进制表格 -->
+		<div class="container is-max-desktop content has-text-centered">
+			<div class="columns is-centered">
+				<div class="column is-four-fifths">
+					<!-- 表格标题：调整为统一样式 -->
+					<p class="has-text-centered is-size-5 mt-3 mb-3" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold;">Performance of multi-task binary ICL on wild data with different demonstration settings.</p>
+					
+					<!-- 三线表 -->
+					<table class="three-line-table" style="width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 1rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-width: 700px;">
+						<!-- 表头 -->
+						<thead>
+							<!-- 顶部横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+							<!-- 列名 -->
+							<tr>
+								<th style="padding: 10px 15px; text-align: left; font-weight: 700; width: 38%; white-space: nowrap;">Demos Source (Prompt Template)</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 12%;">Precision</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 12%;">Recall</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 12%;">FPR</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 13%;">F1-Score</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 13%;">Accuracy</th>
+							</tr>
+							<!-- 列名下方的横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- 数据行1 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Public Datasets (No Reason)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.724</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.883</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.203</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.795</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.829</td>
+							</tr>
+							<!-- 数据行2 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Wild Data (No Reason)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.714</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.836</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.224</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.770</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.800</td>
+							</tr>
+							<!-- 数据行3 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Wild Data (With Reason)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.966</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.800</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.019</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.875</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.909</td>
+							</tr>
+							<!-- 底部横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			For the <strong>multi-task multi-class</strong> setup, ICL performance further improves when both wild data and rationales are used, increasing the weighted F1-score from 0.712 to 0.814. 
+			The largest performance gain is observed for the <em>spam</em> category (F1: 0.301 → 0.834). 
+			Nevertheless, frequent misclassifications between <em>negative</em>, <em>toxic</em>, and <em>benign</em> categories reveal that many wild posts are inherently multi-faceted, combining elements of multiple harmful behaviors, which challenges single-label classification paradigms.
+		</p>
+		
+		<!-- 多任务多类表格 -->
+		<div class="container is-max-desktop content has-text-centered">
+			<div class="columns is-centered">
+				<div class="column is-four-fifths">
+					<!-- 表格标题：调整为统一样式 -->
+					<p class="has-text-centered is-size-5 mt-3 mb-3" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold;">F1-Score of multi-task multi-class ICL on wild data with different demonstration settings.</p>
+					
+					<!-- 三线表 -->
+					<table class="three-line-table" style="width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 1rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-width: 700px;">
+						<!-- 表头 -->
+						<thead>
+							<!-- 顶部横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+							<!-- 列名 -->
+							<tr>
+								<th style="padding: 10px 15px; text-align: left; font-weight: 700; width: 35%; white-space: nowrap;">Demos Source (Prompt Template)</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 13%;">Benign</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 13%;">Negative</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 13%;">Spam</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 13%;">Toxic</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 13%;">Weighted Avg</th>
+							</tr>
+							<!-- 列名下方的横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- 数据行1 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Public Datasets (No Reason)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.870</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.509</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.301</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.509</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.712</td>
+							</tr>
+							<!-- 数据行2 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Wild Data (No Reason)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.895</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.618</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.777</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.449</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.779</td>
+							</tr>
+							<!-- 数据行3 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Wild Data (With Reason)</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.921</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.639</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.834</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.563</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.814</td>
+							</tr>
+							<!-- 底部横线 -->
+							<tr>
+								<td colspan="6" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			The <strong>multi-task multi-label</strong> formulation provides a more faithful reflection of real-world content, allowing each text to be assigned multiple overlapping labels. 
+			Under this setting, ICL achieves strong results with a Subset Accuracy of 0.707, a low Hamming Loss of 0.090, and a high Jaccard Score of 0.831. 
+			Per-class analysis shows balanced performance across all categories, with a weighted average F1 of 0.867, confirming ICL’s ability to jointly model co-occurring harmful phenomena such as toxic-spam or negative-toxic combinations.
+		</p>
+		
+		<!-- 替换多任务多标签图片的三线表 -->
+		<div class="container is-max-desktop content has-text-centered">
+			<div class="columns is-centered">
+				<div class="column is-four-fifths">
+					<!-- 表格标题：调整为统一样式 -->
+					<p class="has-text-centered is-size-5 mt-3 mb-3" style="font-family: Arial, Helvetica, sans-serif; font-weight: bold;">Performance of multi-task multi-label ICL on wild data.</p>
+					
+					<!-- 三线表 -->
+					<table class="three-line-table" style="width: 100%; border-collapse: collapse; margin: 0 auto; font-size: 1rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-width: 700px;">
+						<!-- 表头 -->
+						<thead>
+							<!-- 顶部横线 -->
+							<tr>
+								<td colspan="5" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+							<!-- 列名 -->
+							<tr>
+								<th style="padding: 10px 15px; text-align: left; font-weight: 700; width: 18%; white-space: nowrap;">Label</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 15%;">Count</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 22%;">Precision</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 22%;">Recall</th>
+								<th style="padding: 10px; text-align: center; font-weight: 700; width: 23%;">F1-Score</th>
+							</tr>
+							<!-- 列名下方的横线 -->
+							<tr>
+								<td colspan="5" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- 数据行1 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Benign</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">1907</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.917</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.874</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.895</td>
+							</tr>
+							<!-- 数据行2 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Negative</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">1202</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.810</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.916</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.859</td>
+							</tr>
+							<!-- 数据行3 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Spam</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">371</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.758</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.836</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.795</td>
+							</tr>
+							<!-- 数据行4 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Toxic</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">532</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.845</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.829</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.837</td>
+							</tr>
+							<!-- 中间横线（细线） -->
+							<tr>
+								<td colspan="5" style="border-bottom: 1px solid #333; padding: 0;"></td>
+							</tr>
+							<!-- 加权平均值行 -->
+							<tr>
+								<td style="padding: 10px 15px; text-align: left; vertical-align: middle; font-weight: 700; white-space: nowrap;">Weighted Avg</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">4012</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.861</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.877</td>
+								<td style="padding: 10px; text-align: center; vertical-align: middle; font-weight: 700;">0.867</td>
+							</tr>
+							<!-- 底部横线 -->
+							<tr>
+								<td colspan="5" style="border-bottom: 2px solid #333; padding: 0;"></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<!-- 补充原文提到的其他指标说明
+					<p style="font-size: 0.95rem; text-align: left; margin-top: 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+						Additional metrics: Subset Accuracy = 0.707, Hamming Loss = 0.090, Jaccard Score = 0.831
+					</p> -->
+				</div>
+			</div>
+		</div>
+		
+		<p>
+			Overall, evaluation on wild data highlights three core findings. 
+			First, strong benchmark performance does not ensure real-world robustness due to domain shifts and noisy contexts. 
+			Second, reason-augmented demonstrations significantly improve stability and precision under wild conditions. 
+			Third, multi-label formulations better capture the intertwined nature of harmful content, making them essential for open-domain moderation. 
+			These insights emphasize that robust deployment of ICL for harmful content detection requires moving beyond controlled benchmarks toward richer, reason-aware, and multi-label modeling frameworks that mirror the complexities of real-world data.
+		</p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+        <p>
+          This website is licensed under a <a rel="license"
+          href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+        Commons Attribution-ShareAlike 4.0 International License</a>.
+      </p>
+      <p>
+        Website source code based on the <a href="https://nerfies.github.io/"> Nerfies</a> project page. If you want to reuse their <a
+        href="https://github.com/nerfies/nerfies.github.io">source code</a>, please credit them appropriately.
+      </p>
+    </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
+
+
