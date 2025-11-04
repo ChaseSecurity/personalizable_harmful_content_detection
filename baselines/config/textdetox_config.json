@@ -1,0 +1,31 @@
+{
+    "name": "textdetox_BERT",
+    "n_gpu": 1,
+    "batch_size": 10,
+    "accumulate_grad_batches": 3,
+    "loss": "binary_cross_entropy",
+    "model": {
+        "type": "BERT",
+        "num_classes": 1,
+        "model_type": "/root/autodl-tmp/model_1",
+        "model_name": "BertForSequenceClassification",
+        "tokenizer_name": "BertTokenizer"
+    },
+    "dataset": {
+        "type": "JigsawDataOriginal",
+        "args": {
+            "train_csv_file": "/root/autodl-tmp/dataset/toxic/train.csv",
+            "test_csv_file": "/root/autodl-tmp/dataset/toxic/validation.csv",
+            "add_test_labels": false,
+            "classes": ["toxicity"]
+        }
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args": {
+            "lr": 0.00003,
+            "weight_decay": 0.000003,
+            "amsgrad": true
+        }
+    }
+}
