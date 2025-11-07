@@ -122,7 +122,7 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-	    	The proliferation of harmful online content—e.g., toxicity, spam, and negative sentiment—demands robust and adaptable moderation systems. However, prevailing moderation systems are centralized and task-specific, offering limited transparency and neglecting diverse user preferences—an approach ill-suited for privacy-sensitive or decentralized environments. We propose a novel framework that leverages in-context learning (ICL) with foundation models to unify the detection of toxicity, spam, and negative sentiment across binary, multi-class, and multi-label settings. Crucially, our approach enables lightweight personalization, allowing users to easily block new categories, unblock existing ones, or extend detection to semantic variations through simple prompt-based interventions—all without model retraining.Extensive experiments on public benchmarks (TextDetox, UCI SMS, SST2) and a new, annotated Mastodon dataset reveal that: (i) foundation models achieve strong cross-task generalization, often matching or surpassing task-specific fine-tuned models; (ii) effective personalization is achievable with as few as one user-provided example or definition; and (iii) augmenting prompts with label definitions or rationales significantly enhances robustness to noisy, real-world data.Our work demonstrates a definitive shift beyond one-size-fits-all moderation, establishing ICL as a practical, privacy-preserving, and highly adaptable pathway for the next generation of user-centric content safety systems.
+	    	The proliferation of <b>harmful online content</b>—e.g., toxicity, spam, and negative sentiment—demands robust and adaptable moderation systems. However, prevailing moderation systems are centralized and task-specific, offering limited transparency and neglecting diverse user preferences—an approach ill-suited for privacy-sensitive or decentralized environments. <b>We propose a novel framework that leverages in-context learning (ICL) with foundation models to unify the detection of toxicity, spam, and negative sentiment across binary, multi-class, and multi-label settings.</b> Crucially, our approach enables <b>lightweight personalization</b>, allowing users to easily block new categories, unblock existing ones, or extend detection to semantic variations through simple prompt-based interventions—all without model retraining.Extensive experiments on public benchmarks (TextDetox, UCI SMS, SST2) and <b>a new, annotated Mastodon dataset</b> reveal that: (i) foundation models achieve strong cross-task generalization, often matching or surpassing task-specific fine-tuned models; (ii) effective personalization is achievable with as few as one user-provided example or definition; and (iii) augmenting prompts with label definitions or rationales significantly enhances robustness to noisy, real-world data.<b>Our work demonstrates a definitive shift beyond one-size-fits-all moderation, establishing ICL as a practical, privacy-preserving, and highly adaptable pathway for the next generation of user-centric content safety systems.</b>
           </p>
         </div>
       </div>
@@ -294,6 +294,7 @@
             style="width: 100%; height: 100%; border: 0; display: block;">
     </iframe>
   </div>  
+  <p class="has-text-centered is-size-5 mt-3" style="margin-bottom: 0; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">In-Context Learning Task Execution Flow.</p>
 </section>
 
 <!--General ICL Settings. -->
@@ -364,9 +365,9 @@
 		<h2 class="title is-3">Single-Task ICL</h2>
 		<p>
 			Our single-task experiments demonstrate that in-context learning (ICL) achieves strong and stable performance across all three binary harmful content detection tasks—spam, sentiment, and toxicity. 
-			ICL performance improves with more demonstrations and stabilizes beyond moderate shot counts, with Balanced Semantic and Balanced Lexical retrieval strategies consistently yielding the best results. 
+			<b>ICL performance improves with more demonstrations and stabilizes beyond moderate shot counts, with Balanced Semantic and Balanced Lexical retrieval strategies consistently yielding the best results. </b>
 			All models reach near-ceiling accuracy on SST-2, while Llama performs best overall, achieving an F1-score of 0.991 on the spam task and 0.971 on toxicity. 
-			Compared to fine-tuned BERT baselines, ICL matches or surpasses performance without requiring gradient updates, underscoring its efficiency, adaptability, and potential as a lightweight alternative for harmful content detection.
+			<b>Compared to fine-tuned BERT baselines, ICL matches or surpasses performance without requiring gradient updates, underscoring its efficiency, adaptability, and potential as a lightweight alternative for harmful content detection.</b>
 		</p>
 		
 		<!-- 调整后的图片区域：参考示例格式，居中+90%宽度 -->
@@ -575,7 +576,7 @@
 			In the multi-task binary setting, ICL demonstrates strong generalization across heterogeneous harmful content categories. 
 			Among retrieval strategies, Random consistently yields the best overall performance, while Balanced Semantic performs better at smaller shot counts. 
 			Llama-Random achieves the highest F1-score of 0.918 at 192 shots, followed closely by Qwen and Mistral. 
-			Compared with single-task ICL, multi-task models maintain similar recall but suffer higher false positive rates, as exposure to diverse harm types broadens their decision boundaries. 
+			<b>Compared with single-task ICL, multi-task models maintain similar recall but suffer higher false positive rates, as exposure to diverse harm types broadens their decision boundaries. </b>
 			Enhancing task descriptions with explicit definitions (Level 2 prompts) significantly mitigates this issue, improving Llama-Random’s F1 to 0.934 and reducing false positives, demonstrating that richer prompt information enhances model discrimination and robustness in multi-task moderation.
 		</p>
 
@@ -669,8 +670,10 @@
       <div class="column is-full">
 		<h2 class="title is-3">Multi-Task Multi-Class ICL</h2>
 		<p>
-			In the multi-task multi-class setting, ICL exhibits strong generalization across toxicity, spam, and negative sentiment categories. 
-			Fine-grained Balanced Semantic retrieval performs better with fewer demonstrations, while Random retrieval surpasses it as the number of shots increases. 
+			<b>
+				In the multi-task multi-class setting, ICL exhibits strong generalization across toxicity, spam, and negative sentiment categories.
+				Fine-grained Balanced Semantic retrieval performs better with fewer demonstrations, while Random retrieval surpasses it as the number of shots increases.
+			</b>
 			Qwen and Llama achieve the best overall performance, both reaching a weighted F1-score of 0.938 at 192 shots, with Llama selected for further analysis due to its consistent robustness. 
 			Detailed evaluation reveals that Llama distinguishes harmful categories effectively once harmfulness is detected but often confuses benign and negative texts, reflecting the semantic ambiguity between them. 
 			Introducing richer Level 2 task descriptions further improves performance, boosting F1 to 0.955 and reducing false positives, confirming that explicit label definitions enhance precision and model stability in fine-grained harmful content classification.
@@ -747,7 +750,7 @@
 
 		<p>
 			In the first scenario, ICL effectively adapts to unseen harmful categories such as toxicity, even with minimal examples. 
-			Adding just one or two new samples rapidly stabilizes performance, and richer task descriptions (Level 2 prompts) further improve results at smaller demonstration counts. 
+			<b>Adding just one or two new samples rapidly stabilizes performance, and richer task descriptions (Level 2 prompts) further improve results at smaller demonstration counts.</b> 
 			This demonstrates that ICL can expand its coverage of harmful types with very limited supervision while maintaining generalization across known categories.
 		</p>
 		<!-- 二图并排布局（Scenario 1）：统一格式调整 -->
@@ -774,7 +777,7 @@
 
 		<p>
 			In the unblocking scenario, where certain harmful types are redefined as benign, ICL exhibits a balance between prior harmfulness knowledge and user-specific redefinitions. 
-			A small number of re-labeled examples or explicit definitions enables the model to override previous categorizations effectively, confirming that user-driven recalibration can be achieved with few-shot personalization.
+			<b>A small number of re-labeled examples or explicit definitions enables the model to override previous categorizations effectively, confirming that user-driven recalibration can be achieved with few-shot personalization.</b>
 		</p>
 		<!-- 二图并排布局（Scenario 2）：统一格式调整 -->
 		<div style="text-align: center; margin: 24px 0;">
@@ -800,7 +803,7 @@
 
 		<p>
 			Finally, in the instance-level blocking scenario, ICL successfully learns to filter out perturbed variants of a harmful text. 
-			While adding one example suffices to generalize across variations, excessive perturbations can introduce semantic noise and degrade performance, especially for spam. 
+			<b>While adding one example suffices to generalize across variations, excessive perturbations can introduce semantic noise and degrade performance, especially for spam. </b>
 		</p>
 		<!-- 三图并排布局（Scenario 3）：统一格式调整 -->
 		<div style="text-align: center; margin: 24px 0;">
@@ -845,15 +848,15 @@
       <div class="column is-full">
 		<h2 class="title is-3">Evaluation on Wild Data</h2>
 		<p>
-			This section evaluates the robustness and generalizability of In-Context Learning (ICL) on <em>wild data</em>—real-world, uncurated social media posts that exhibit domain shifts, noisy labels, and overlapping harmful categories. 
+			This section evaluates the robustness and generalizability of In-Context Learning (ICL) on <b><em>wild data</em>—real-world, uncurated social media posts that exhibit domain shifts, noisy labels, and overlapping harmful categories. </b>
 			Unlike benchmark datasets, which are clean and well-structured, wild data better reflects the challenges faced by real-world moderation systems. 
-			To this end, a new dataset of 3,000 annotated Mastodon posts was constructed, each labeled under binary, multi-class, and multi-label schemes to capture the inherent ambiguity and overlap of real-world content.
+			To this end, <b>a new dataset of 3,000 annotated Mastodon posts was constructed</b>, each labeled under binary, multi-class, and multi-label schemes to capture the inherent ambiguity and overlap of real-world content.
 		</p>
 
 		<p>
-			In the <strong>multi-task binary</strong> setting, ICL experiences a noticeable performance drop when trained on benchmark-based demonstrations and tested on wild data—F1 decreases from 0.887 to 0.795—highlighting domain transfer challenges. 
+			In the multi-task binary setting, ICL experiences a noticeable performance drop when trained on benchmark-based demonstrations and tested on wild data—F1 decreases from 0.887 to 0.795—highlighting domain transfer challenges. 
 			Replacing demonstrations with wild data does not solve this issue due to higher noise levels. 
-			However, enriching each demonstration with model-generated rationales markedly improves robustness, boosting precision to 0.966 and F1 to 0.875. 
+			<b>However, enriching each demonstration with model-generated rationales markedly improves robustness, boosting precision to 0.966 and F1 to 0.875. </b>
 			These results confirm that incorporating interpretive signals mitigates noise sensitivity and enhances model reliability in uncontrolled environments.
 		</p>
 		
@@ -925,7 +928,7 @@
 		</div>
 
 		<p>
-			For the <strong>multi-task multi-class</strong> setup, ICL performance further improves when both wild data and rationales are used, increasing the weighted F1-score from 0.712 to 0.814. 
+			<b>For the <strong>multi-task multi-class</strong> setup, ICL performance further improves when both wild data and rationales are used, increasing the weighted F1-score from 0.712 to 0.814. </b>
 			The largest performance gain is observed for the <em>spam</em> category (F1: 0.301 → 0.834). 
 			Nevertheless, frequent misclassifications between <em>negative</em>, <em>toxic</em>, and <em>benign</em> categories reveal that many wild posts are inherently multi-faceted, combining elements of multiple harmful behaviors, which challenges single-label classification paradigms.
 		</p>
@@ -998,8 +1001,8 @@
 		</div>
 
 		<p>
-			The <strong>multi-task multi-label</strong> formulation provides a more faithful reflection of real-world content, allowing each text to be assigned multiple overlapping labels. 
-			Under this setting, ICL achieves strong results with a Subset Accuracy of 0.707, a low Hamming Loss of 0.090, and a high Jaccard Score of 0.831. 
+			The multi-task multi-label formulation provides a more faithful reflection of real-world content, allowing each text to be assigned multiple overlapping labels. 
+			<b>Under this setting, ICL achieves strong results with a Subset Accuracy of 0.707, a low Hamming Loss of 0.090, and a high Jaccard Score of 0.831. </b>
 			Per-class analysis shows balanced performance across all categories, with a weighted average F1 of 0.867, confirming ICL’s ability to jointly model co-occurring harmful phenomena such as toxic-spam or negative-toxic combinations.
 		</p>
 		
@@ -1103,6 +1106,20 @@
     </div>
   </div>
 </section>
+
+<!-- <section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{zhang2025beyond,
+      title={Port Forwarding Services Are Forwarding Security Risks}, 
+      author={Haoyuan Wang and Yue Xue and Xuan Feng and Chao Zhou and Xianghang Mi},
+      year={2024},
+      eprint={2403.16060},
+      archivePrefix={arXiv},
+      primaryClass={cs.CR}
+}</code></pre>
+  </div>
+</section> -->
 
 <footer class="footer">
   <div class="container">
