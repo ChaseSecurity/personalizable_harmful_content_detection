@@ -94,6 +94,27 @@ A similar approach applies to resolving `textattack` issues.
 
 ---
 
+### Download Models
+To run the notebooks, you need to download the following models from [hugginface](https://huggingface.co/):
+
+- [Qwen2-7B-Instruct](https://huggingface.co/Qwen/Qwen2-7B-Instruct)
+- [Mistral-7B-Instruct-v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3)
+- [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct)
+
+Example: Download Qwen2-7B-Instruct
+
+```
+# 1. Install Hugging Face CLI if not already installed
+pip install -U "huggingface_hub[cli]"
+
+# 2. Login to your Hugging Face account
+huggingface-cli login
+
+# 3. Download the full model repository
+huggingface-cli download Qwen/Qwen2-7B-Instruct --local-dir ./models/Qwen2-7B-Instruct
+
+```
+
 ### Reproduce Results
 
 You can reproduce the results reported in our paper by executing the provided notebooks **cell by cell**.  
@@ -105,6 +126,7 @@ Taking **multi-task binary classification** as an example:
 2. **Run the notebook step by step**  
    - **Cell 1:** Import the required libraries (see *Import libraries* section)  
    - **Cell 2:** Initialize the model (see *Initialize the model* section)  
+     - Note: you need replace the `model` with your downloaded model path.
    - **Cell 3:** Load the dataset (see *multi-task/binary classification* section)  
      - Note: The notebook may include multiple dataset-loading cells for different tasks.  
        Choose the one corresponding to your target task.  
@@ -119,22 +141,22 @@ You can also use the provided code [`predict.py`](./predict.py) to detect a sing
 1. detect whether a text is spam or not:
 
   ```bash
-  python predict.py --harmful_category spam --classification binary --model_path xxxx --text "This is a spam text"
+  python predict.py --harmful_category spam --classification binary --model_path your_model_path --text "This is a spam text"
   ```
 2. detect whether a text is harmful or not in binary classification:
 
   ```bash
-  python predict.py --harmful_category all --classification binary --model_path xxxx --text "This is a harmful text"
+  python predict.py --harmful_category all --classification binary --model_path your_model_path --text "This is a harmful text"
   ```
 3. detect a text's harmful categories in multi-class classification:
 
   ```bash
-  python predict.py --harmful_category all --classification multi-class --model_path xxxx --text "This is a harmful text"
+  python predict.py --harmful_category all --classification multi-class --model_path your_model_path --text "This is a harmful text"
   ```
 4. detect a text's harmful categories in multi-label classification:
 
   ```bash
-  python predict.py --harmful_category all --classification multi-label --model_path xxxx --text "This is a harmful text"
+  python predict.py --harmful_category all --classification multi-label --model_path your_model_path --text "This is a harmful text"
   ```
 
 
