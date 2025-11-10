@@ -32,7 +32,7 @@ Overall, our study moves **beyond one-size-fits-all** moderation, establishing I
 
 ## 📚 Dataset Release
 
-We use three public datasets and one newly collected multi-class, multi-label dataset from Mastodon.  
+We use three public datasets and **one newly collected multi-class, multi-label dataset from Mastodon.**  
 All datasets are publicly available:
 
 - [TextDetox](https://huggingface.co/datasets/textdetox/multilingual_toxicity_dataset)  
