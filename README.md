@@ -3,7 +3,7 @@
 This repository contains the official implementation of our paper:  
 **_“Beyond One-Size-Fits-All: Personalized Harmful Content Detection with In-Context Learning”_**
 
-- [📄 Paper (arXiv)](https://arxiv.org/)
+- [📄 Paper (arXiv)](https://arxiv.org/abs/2511.05532)
 - [🌐 Project Page](https://chasesecurity.github.io/personalizable_harmful_content_detection/)
 
 ---
@@ -165,11 +165,14 @@ You can also use the provided code [`predict.py`](./predict.py) to detect a sing
 
 If you find this work useful, please cite our paper:
 
-<!-- ```bibtex  
-@article{zhang2025beyond,
-  title={BEYOND ONE-SIZE-FITS-ALL: Personalized Harmful Content Detection with In-Context Learning},
-  author={Rufan Zhang,Lin Zhang,Xianghang Mi},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
-  year={2025}
-} -->
-
+```bibtex  
+@misc{zhang2025onesizefitsallpersonalizedharmfulcontent,
+      title={Beyond One-Size-Fits-All: Personalized Harmful Content Detection with In-Context Learning}, 
+      author={Rufan Zhang and Lin Zhang and Xianghang Mi},
+      year={2025},
+      eprint={2511.05532},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2511.05532}, 
+}
+```
